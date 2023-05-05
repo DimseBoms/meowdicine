@@ -4,6 +4,9 @@ import 'dart:ffi';
 import 'package:flutter/material.dart';
 
 import './views/home.dart';
+import './views/calendar.dart';
+import './views/animals.dart';
+import './views/user.dart';
 
 void main() {
   runApp(const MyApp());
@@ -81,11 +84,11 @@ class _AppRootState extends State<AppRoot> {
       case 0:
         return const Home(title: 'Hjem');
       case 1:
-        return const Home(title: 'Kalender');
+        return const Calendar(title: 'Kalender');
       case 2:
-        return const Home(title: 'Dyr');
+        return const User(title: 'Dyr');
       case 3:
-        return const Home(title: 'Bruker');
+        return const User(title: 'Bruker');
       default:
         return const Home(title: 'Hjem');
     }
@@ -120,6 +123,7 @@ class _AppRootState extends State<AppRoot> {
               title: const Text('Hjem'),
               onTap: () {
                 _navigateTo(0);
+                Navigator.pop(context);
               },
             ),
             ListTile(
@@ -127,6 +131,7 @@ class _AppRootState extends State<AppRoot> {
               title: const Text('Kalender'),
               onTap: () {
                 _navigateTo(1);
+                Navigator.pop(context);
               },
             ),
             ListTile(
@@ -134,6 +139,7 @@ class _AppRootState extends State<AppRoot> {
               title: const Text('Dyr'),
               onTap: () {
                 _navigateTo(2);
+                Navigator.pop(context);
               },
             ),
             const Divider(
@@ -145,6 +151,7 @@ class _AppRootState extends State<AppRoot> {
               title: const Text('Bruker'),
               onTap: () {
                 _navigateTo(3);
+                Navigator.pop(context);
               },
             ),
           ],
