@@ -16,7 +16,7 @@ class _CalendarState extends State<Calendar> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Popup'),
-          content: const Text('Hello, popup!'),
+          content: Text(message),
           actions: <Widget>[
             TextButton(
               onPressed: () {
