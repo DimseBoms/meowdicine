@@ -10,16 +10,13 @@ class Calendar extends StatefulWidget {
 }
 
 class _CalendarState extends State<Calendar> {
-  String _welcomeMessage = 'Calendar';
-  String _popupMessage = 'Hello, popup!';
-
-  void _showPopupMessage() {
+  void _showDialog(String message) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Popup'),
-          content: Text(_popupMessage),
+          content: const Text('Hello, popup!'),
           actions: <Widget>[
             TextButton(
               onPressed: () {
@@ -33,20 +30,29 @@ class _CalendarState extends State<Calendar> {
     );
   }
 
+  void _showDatePickerDialog(BuildContext context) async {
+    final DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime.now().subtract(const Duration(days: 730)),
+      lastDate: DateTime.now(),
+    );
+    if (pickedDate != null) {
+      _showDialog("You picked $pickedDate");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // return a widget that represents your home screen
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Text(
-            _welcomeMessage,
-            style: Theme.of(context).textTheme.headlineMedium,
-          ),
-          ElevatedButton(
-              onPressed: _showPopupMessage, child: const Text('Popup')),
-        ],
+    return Scaffold(
+      body: Center(
+        child: OutlinedButton(
+          onPressed: () {
+            _showDatePickerDialog(context);
+          },
+          child: const Text('Open Date Picker'),
+        ),
       ),
     );
   }

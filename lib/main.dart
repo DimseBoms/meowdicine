@@ -86,7 +86,7 @@ class _AppRootState extends State<AppRoot> {
       case 1:
         return const Calendar(title: 'Kalender');
       case 2:
-        return const User(title: 'Dyr');
+        return const Animals(title: 'Dyr');
       case 3:
         return const User(title: 'Bruker');
       default:
