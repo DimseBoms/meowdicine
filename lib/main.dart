@@ -1,11 +1,25 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
+import 'package:meowdicine/database/database_helper.dart';
 
 import 'package:meowdicine/views/home.dart';
 import 'package:meowdicine/views/calendar.dart';
 import 'package:meowdicine/views/animals.dart';
-import 'package:meowdicine/views/user_account.dart';
+import 'package:meowdicine/views/auth_gate.dart';
+
+import 'objects/user.dart';
 
 void main() async {
+  // Avoid errors caused by flutter upgrade.
+  WidgetsFlutterBinding.ensureInitialized();
+  // Open the database and store the reference.
+  final database = DatabaseHelper().initializeDatabase();
+  // Check if the user is logged in.
+  User user = await DatabaseHelper().getUser();
+  print('User: $user');
   runApp(const MyApp());
 }
 
@@ -85,7 +99,7 @@ class _AppRootState extends State<AppRoot> {
       case 2:
         return const Animals(title: 'Dyr');
       case 3:
-        return const User(title: 'Bruker');
+        return const AuthGate(title: 'Bruker');
       default:
         return const Home(title: 'Hjem');
     }
@@ -100,62 +114,59 @@ class _AppRootState extends State<AppRoot> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: _activePageTitle(),
-      ),
-      drawer: Drawer(
-          child: ListView(
-        padding: EdgeInsets.zero,
-        children: <Widget>[
-          const DrawerHeader(
-            decoration: BoxDecoration(
-              color: Colors.blue,
+        appBar: AppBar(
+          // Here we take the value from the MyHomePage object that was created by
+          // the App.build method, and use it to set our appbar title.
+          title: _activePageTitle(),
+        ),
+        drawer: Drawer(
+            child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            const DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.blue,
+              ),
+              child: Text('Drawer Header'),
             ),
-            child: Text('Drawer Header'),
-          ),
-          ListTile(
-            leading: const Icon(Icons.home),
-            title: const Text('Hjem'),
-            onTap: () {
-              _navigateTo(0);
-              Navigator.pop(context);
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.calendar_month),
-            title: const Text('Kalender'),
-            onTap: () {
-              _navigateTo(1);
-              Navigator.pop(context);
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.pets),
-            title: const Text('Dyr'),
-            onTap: () {
-              _navigateTo(2);
-              Navigator.pop(context);
-            },
-          ),
-          const Divider(
-            height: 30,
-            thickness: 1,
-          ),
-          ListTile(
-            leading: const Icon(Icons.account_circle),
-            title: const Text('Bruker'),
-            onTap: () {
-              _navigateTo(3);
-              Navigator.pop(context);
-            },
-          ),
-        ],
-      )),
-      body: Center(
-        child: _activePage(),
-      ),
-    );
+            ListTile(
+              leading: const Icon(Icons.home),
+              title: const Text('Hjem'),
+              onTap: () {
+                _navigateTo(0);
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.calendar_month),
+              title: const Text('Kalender'),
+              onTap: () {
+                _navigateTo(1);
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.pets),
+              title: const Text('Dyr'),
+              onTap: () {
+                _navigateTo(2);
+                Navigator.pop(context);
+              },
+            ),
+            const Divider(
+              height: 30,
+              thickness: 1,
+            ),
+            ListTile(
+              leading: const Icon(Icons.account_circle),
+              title: const Text('Bruker'),
+              onTap: () {
+                _navigateTo(3);
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        )),
+        body: _activePage());
   }
 }
