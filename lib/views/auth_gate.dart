@@ -12,27 +12,62 @@ class AuthGate extends StatefulWidget {
 class _AuthGateState extends State<AuthGate> {
   @override
   Widget build(BuildContext context) {
-    // return a login page if the user is not logged in
-    // return a user page if the user is logged in
+    // Widget containing text fields and buttons for logging in
+    // or registering a new user
+    return const LoginWidget();
+  }
+}
+
+class LoginWidget extends StatelessWidget {
+  const LoginWidget({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Text('AuthGate'),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pushNamed(context, '/login');
-            },
-            child: const Text('Logg inn'),
+      child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+        const Padding(
+          padding: EdgeInsets.all(16.0),
+          child: TextField(
+            decoration: InputDecoration(
+              border: OutlineInputBorder(),
+              labelText: 'Brukernavn',
+            ),
           ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pushNamed(context, '/register');
-            },
-            child: const Text('Registrer'),
+        ),
+        const Padding(
+          padding: EdgeInsets.all(16.0),
+          child: TextField(
+            obscureText: true,
+            decoration: InputDecoration(
+              border: OutlineInputBorder(),
+              labelText: 'Passord',
+            ),
           ),
-        ],
-      ),
+        ),
+        Center(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              ElevatedButton(
+                onPressed: () {},
+                child: const Padding(
+                  padding: EdgeInsets.all(14.0),
+                  child: Text('Logg inn'),
+                ),
+              ),
+              ElevatedButton(
+                onPressed: () {},
+                child: const Padding(
+                  padding: EdgeInsets.all(14.0),
+                  child: Text('Registrer'),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ]),
     );
   }
 }
