@@ -1,7 +1,7 @@
 class Prescription {
   String name;
   String description;
-  String dosage; // TODO: Change to Int
+  String dosage; // TODO: Change to Double
   String unit;
   String frequency; // TODO: Change to Int
 

@@ -1,14 +1,11 @@
-import 'dart:collection';
-//import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 
-import './views/home.dart';
-import './views/calendar.dart';
-import './views/animals.dart';
-import './views/user.dart';
+import 'package:meowdicine/views/home.dart';
+import 'package:meowdicine/views/calendar.dart';
+import 'package:meowdicine/views/animals.dart';
+import 'package:meowdicine/views/user_account.dart';
 
-void main() {
+void main() async {
   runApp(const MyApp());
 }
 
@@ -103,59 +100,62 @@ class _AppRootState extends State<AppRoot> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     return Scaffold(
-        appBar: AppBar(
-          // Here we take the value from the MyHomePage object that was created by
-          // the App.build method, and use it to set our appbar title.
-          title: _activePageTitle(),
-        ),
-        drawer: Drawer(
-            child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.blue,
-              ),
-              child: Text('Drawer Header'),
+      appBar: AppBar(
+        // Here we take the value from the MyHomePage object that was created by
+        // the App.build method, and use it to set our appbar title.
+        title: _activePageTitle(),
+      ),
+      drawer: Drawer(
+          child: ListView(
+        padding: EdgeInsets.zero,
+        children: <Widget>[
+          const DrawerHeader(
+            decoration: BoxDecoration(
+              color: Colors.blue,
             ),
-            ListTile(
-              leading: const Icon(Icons.home),
-              title: const Text('Hjem'),
-              onTap: () {
-                _navigateTo(0);
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.calendar_month),
-              title: const Text('Kalender'),
-              onTap: () {
-                _navigateTo(1);
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.pets),
-              title: const Text('Dyr'),
-              onTap: () {
-                _navigateTo(2);
-                Navigator.pop(context);
-              },
-            ),
-            const Divider(
-              height: 30,
-              thickness: 1,
-            ),
-            ListTile(
-              leading: const Icon(Icons.account_circle),
-              title: const Text('Bruker'),
-              onTap: () {
-                _navigateTo(3);
-                Navigator.pop(context);
-              },
-            ),
-          ],
-        )),
-        body: _activePage());
+            child: Text('Drawer Header'),
+          ),
+          ListTile(
+            leading: const Icon(Icons.home),
+            title: const Text('Hjem'),
+            onTap: () {
+              _navigateTo(0);
+              Navigator.pop(context);
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.calendar_month),
+            title: const Text('Kalender'),
+            onTap: () {
+              _navigateTo(1);
+              Navigator.pop(context);
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.pets),
+            title: const Text('Dyr'),
+            onTap: () {
+              _navigateTo(2);
+              Navigator.pop(context);
+            },
+          ),
+          const Divider(
+            height: 30,
+            thickness: 1,
+          ),
+          ListTile(
+            leading: const Icon(Icons.account_circle),
+            title: const Text('Bruker'),
+            onTap: () {
+              _navigateTo(3);
+              Navigator.pop(context);
+            },
+          ),
+        ],
+      )),
+      body: Center(
+        child: _activePage(),
+      ),
+    );
   }
 }

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../objects/animal.dart';
+import 'package:meowdicine/objects/animal.dart';
 
 class MedicineCalendar extends StatefulWidget {
-  const MedicineCalendar({Key? key, required this.title, required this.animal}) : super(key: key);
+  const MedicineCalendar({Key? key, required this.title, required this.animal})
+      : super(key: key);
 
   final String title;
   final Animal animal;
@@ -13,58 +14,78 @@ class MedicineCalendar extends StatefulWidget {
 }
 
 class _MedicineCalendarState extends State<MedicineCalendar> {
-  String _pageTitle = 'Medisinkalender';
-  DateTime _selectedDateTime = DateTime.now();
-
-  void _refreshSelectedDate(DateTime date) {
-    setState(() {
-      _selectedDateTime = date;
-    });
+  String _currentMonthPretty(int month) {
+    final monthNames = {
+      1: 'Januar',
+      2: 'Februar',
+      3: 'Mars',
+      4: 'April',
+      5: 'Mai',
+      6: 'Juni',
+      7: 'Juli',
+      8: 'August',
+      9: 'September',
+      10: 'Oktober',
+      11: 'November',
+      12: 'Desember',
+    };
+    return monthNames[month] ?? 'Ukjent';
   }
 
+  _currentDatePretty() {
+    final dayNames = {
+      1: 'Mandag',
+      2: 'Tirsdag',
+      3: 'Onsdag',
+      4: 'Torsdag',
+      5: 'Fredag',
+      6: 'Lørdag',
+      7: 'Søndag',
+    };
+    final dayNumber = DateTime.now().day;
+    final monthName = _currentMonthPretty(DateTime.now().month);
+    final dayOfWeek = dayNames[DateTime.now().weekday] ?? 'Ukjent';
+    return '$dayOfWeek, den $dayNumber. $monthName ${DateTime.now().year}';
+  }
 
-  Widget _buildCalendarRow(DateTimeRange week) {
-    return Row(
-      children: [
-        Text(week.start.toString()),
-        Text(week.end.toString()),
-      ],
-    );
+  _calendarTitleStyle() {
+    return Theme.of(context).textTheme.headlineSmall?.copyWith(
+          color: Colors.white,
+        );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: ListView.builder(
-        itemCount: (_selectedDateTime.month == 2)
-            ? 4
-            : ((_selectedDateTime.month % 2 == 0) ? 5 : 6),
-        itemBuilder: (BuildContext context, int index) {
-          DateTimeRange week = DateTimeRange(
-            start: DateTime(
-              _selectedDateTime.year,
-              _selectedDateTime.month,
-              (index * 7) + 1,
+    return Container(
+        constraints: const BoxConstraints(
+          maxWidth: 800,
+        ),
+        decoration: BoxDecoration(
+          color: Colors.blue,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text(_currentDatePretty(), style: _calendarTitleStyle()),
             ),
-            end: DateTime(
-              _selectedDateTime.year,
-              _selectedDateTime.month,
-              (index * 7) + 7,
-            ),
-          );
-          if (week.end.month != _selectedDateTime.month) {
-            week = DateTimeRange(
-              start: week.start,
-              end: DateTime(
-                _selectedDateTime.year,
-                _selectedDateTime.month,
-                DateTime(_selectedDateTime.year, _selectedDateTime.month + 1, 0).day,
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
               ),
-            );
-          }
-          return _buildCalendarRow(week);
-        },
-      ),
-    );
+              child: CalendarDatePicker(
+                initialDate: DateTime.now(),
+                firstDate: DateTime.now().subtract(const Duration(days: 730)),
+                lastDate: DateTime.now(),
+                onDateChanged: (DateTime value) {
+                  print(
+                      'Date selected: ${value.day}.${value.month}.${value.year}');
+                },
+              ),
+            ),
+          ],
+        ));
   }
 }

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../widgets/medicine_calendar.dart';
-import '../objects/animal.dart';
-import '../objects/prescription.dart';
-
+import 'package:meowdicine/widgets/medicine_calendar.dart';
+import 'package:meowdicine/objects/animal.dart';
+import 'package:meowdicine/objects/prescription.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key, required this.title}) : super(key: key);
@@ -18,9 +17,11 @@ class _HomeState extends State<Home> {
   String _pageTitle = 'Medisinkalender';
   String _popupMessage = 'Hello, popup!';
   DateTime _selectedDateTime = DateTime.now();
+
+  // Generate test animal
   Animal _testArne = Animal(
     name: 'Arne',
-    birthday: DateTime.now().subtract(const Duration(days: 365*15)),
+    birthday: DateTime.now().subtract(const Duration(days: 365 * 15)),
     species: 'Katt',
     prescriptions: [
       Prescription(
@@ -32,46 +33,17 @@ class _HomeState extends State<Home> {
     ],
   );
 
-  void _showPopupMessage() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Popup'),
-          content: Text(_popupMessage),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('OK'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _refreshSelectedDate(DateTime date) {
-    setState(() {
-      _selectedDateTime = date;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     // return a widget that represents your home screen
-    return Scaffold(
-      body: Center(
-          child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(_pageTitle, style: Theme.of(context).textTheme.headlineMedium),
-            Text(_selectedDateTime.toString()),
-            MedicineCalendar(title: 'Medisinkalender', animal: _testArne),
-          ],
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        MedicineCalendar(
+          title: 'Medisinkalender',
+          animal: _testArne,
         ),
-      ),
+      ],
     );
   }
 }

@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
-class Animals extends StatefulWidget {
-  const Animals({Key? key, required this.title}) : super(key: key);
+class User extends StatefulWidget {
+  const User({Key? key, required this.title}) : super(key: key);
 
   final String title;
 
   @override
-  State<Animals> createState() => _AnimalsState();
+  State<User> createState() => _UserState();
 }
 
-class _AnimalsState extends State<Animals> {
+class _UserState extends State<User> {
   @override
   Widget build(BuildContext context) {
     // return a widget that represents your home screen
@@ -18,7 +18,7 @@ class _AnimalsState extends State<Animals> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Text(
-            'Animals',
+            'User',
             style: Theme.of(context).textTheme.headlineMedium,
           ),
         ],
