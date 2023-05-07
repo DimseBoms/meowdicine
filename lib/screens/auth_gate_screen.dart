@@ -23,10 +23,36 @@ class _AuthGateScreenState extends State<AuthGateScreen> {
   }
 }
 
-class LoginWidget extends StatelessWidget {
-  LoginWidget({
+class LoginWidget extends StatefulWidget {
+  const LoginWidget({
     super.key,
   });
+
+  @override
+  State<LoginWidget> createState() => _LoginWidgetState();
+}
+
+class _LoginWidgetState extends State<LoginWidget> {
+  bool _isLoggedIn = false;
+  String _username = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _checkIfLoggedIn();
+  }
+
+  void _checkIfLoggedIn() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    final username = prefs.getString('username');
+    if (token != null && username != null) {
+      setState(() {
+        _isLoggedIn = true;
+        _username = username;
+      });
+    }
+  }
 
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -44,30 +70,9 @@ class LoginWidget extends StatelessWidget {
         prefs.setString('username', username);
         // Show success popup message
         if (context.mounted) {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: const [
-                    Text('Suksess'),
-                    Icon(Icons.check_circle_outline),
-                  ],
-                ),
-                content: const Text('Du er nå logget inn!'),
-                actions: <Widget>[
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text('OK'),
-                  ),
-                ],
-              );
-            },
-          );
+          Navigator.of(context).pop();
+          Navigator.of(context).pop();
+          Navigator.pushNamed(context, '/auth_gate');
         }
       } else {
         // Show error popup message
@@ -80,7 +85,10 @@ class LoginWidget extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: const [
                     Text('Klarte ikke å logge inn'),
-                    Icon(Icons.error),
+                    Icon(
+                      Icons.error,
+                      color: Colors.red,
+                    ),
                   ],
                 ),
                 content: const Text(
@@ -116,7 +124,10 @@ class LoginWidget extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: const [
                   Text('Klarte ikke å logge inn'),
-                  Icon(Icons.wifi_off)
+                  Icon(
+                    Icons.wifi_off,
+                    color: Colors.yellow,
+                  )
                 ],
               ),
               content: const Text(
@@ -162,7 +173,10 @@ class LoginWidget extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: const [
                     Text('Suksess'),
-                    Icon(Icons.check_circle_outline),
+                    Icon(
+                      Icons.check_circle_outline,
+                      color: Colors.green,
+                    ),
                   ],
                 ),
                 content: const Text('Du er nå registrert!'),
@@ -170,6 +184,8 @@ class LoginWidget extends StatelessWidget {
                   TextButton(
                     onPressed: () {
                       Navigator.of(context).pop();
+                      Navigator.of(context).pop();
+                      Navigator.pushNamed(context, '/auth_gate');
                       // Navigate to home page
                     },
                     child: const Text('OK'),
@@ -190,7 +206,10 @@ class LoginWidget extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: const [
                     Text('Klarte ikke å registrere bruker'),
-                    Icon(Icons.error),
+                    Icon(
+                      Icons.error,
+                      color: Colors.red,
+                    ),
                   ],
                 ),
                 content: const Text(
@@ -226,7 +245,7 @@ class LoginWidget extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: const [
                   Text('Klarte ikke å registrere bruker'),
-                  Icon(Icons.wifi_off)
+                  Icon(Icons.wifi_off, color: Colors.yellow),
                 ],
               ),
               content: const Text(
@@ -254,78 +273,136 @@ class LoginWidget extends StatelessWidget {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          Align(
-            alignment: Alignment.topCenter,
-            child: Padding(
-              padding: const EdgeInsets.all(25.0),
-              child: Text('Logg inn eller registrer deg for å fortsette',
-                  style: Theme.of(context).textTheme.headlineMedium),
+  void _logout(BuildContext context) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.remove('token');
+    prefs.remove('username');
+    if (context.mounted) {
+      Navigator.of(context)
+          .popUntil((route) => route.settings.name != 'auth_gate');
+      Navigator.of(context).pushReplacementNamed('/auth_gate');
+    }
+  }
+
+  Widget _buildLogin(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Logg inn'),
+      ),
+      body: Center(
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            Align(
+              alignment: Alignment.topCenter,
+              child: Padding(
+                padding: const EdgeInsets.all(25.0),
+                child: Text('Logg inn eller registrer deg for å fortsette',
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.headlineMedium),
+              ),
             ),
-          ),
-          ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 500),
-            child:
-                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: TextField(
-                  controller: _usernameController,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Brukernavn',
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: TextField(
-                  controller: _passwordController,
-                  obscureText: true,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Passord',
-                  ),
-                ),
-              ),
-              Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 500),
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        _register(context);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            Theme.of(context).colorScheme.secondary,
-                      ),
-                      child: const Padding(
-                        padding: EdgeInsets.all(14.0),
-                        child: Text('Registrer'),
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: TextField(
+                        controller: _usernameController,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Brukernavn',
+                        ),
                       ),
                     ),
-                    ElevatedButton(
-                      onPressed: () {
-                        _login(context);
-                      },
-                      child: const Padding(
-                        padding: EdgeInsets.all(14.0),
-                        child: Text('Logg inn'),
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: TextField(
+                        controller: _passwordController,
+                        obscureText: true,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Passord',
+                        ),
                       ),
                     ),
-                  ],
-                ),
-              ),
-            ]),
-          )
-        ],
+                    Center(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          ElevatedButton(
+                            onPressed: () {
+                              _register(context);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor:
+                                  Theme.of(context).colorScheme.secondary,
+                            ),
+                            child: const Padding(
+                              padding: EdgeInsets.all(14.0),
+                              child: Text('Registrer'),
+                            ),
+                          ),
+                          ElevatedButton(
+                            onPressed: () {
+                              _login(context);
+                            },
+                            child: const Padding(
+                              padding: EdgeInsets.all(14.0),
+                              child: Text('Logg inn'),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ]),
+            )
+          ],
+        ),
       ),
     );
+  }
+
+  Widget _buildAccount(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Konto'),
+      ),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Text(
+                'Du er logget inn som $_username',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 20),
+              ),
+              Text(
+                username,
+                style: const TextStyle(fontSize: 20),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  _logout(context);
+                },
+                child: const Padding(
+                  padding: EdgeInsets.all(14.0),
+                  child: Text('Logg ut'),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _isLoggedIn ? _buildAccount(context) : _buildLogin(context);
   }
 }
