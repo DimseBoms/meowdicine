@@ -36,4 +36,23 @@ class Prescription {
   String toString() {
     return 'Prescription{name: $name, description: $description, dosage: $dosage, unit: $unit, frequency: $frequency}';
   }
+
+  factory Prescription.fromJson(Map<String, dynamic> json) {
+    return Prescription(
+        name: json['name'],
+        description: json['description'],
+        dosage: json['dosage'],
+        unit: json['unit'],
+        frequency: json['frequency']);
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'description': description,
+      'dosage': dosage,
+      'unit': unit,
+      'frequency': frequency
+    };
+  }
 }

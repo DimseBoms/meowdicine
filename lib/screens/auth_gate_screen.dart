@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:meowdicine/http/backend_api.dart';
-import 'package:meowdicine/objects/user.dart';
 
 class AuthGateScreen extends StatefulWidget {
   const AuthGateScreen({Key? key, required this.title}) : super(key: key);
@@ -33,25 +32,29 @@ class LoginWidget extends StatefulWidget {
 }
 
 class _LoginWidgetState extends State<LoginWidget> {
-  bool _isLoggedIn = false;
   String _username = '';
+  String _token = '';
 
   @override
   void initState() {
     super.initState();
-    _checkIfLoggedIn();
+    _initCredentials();
   }
 
-  void _checkIfLoggedIn() async {
+  void _initCredentials() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
     final username = prefs.getString('username');
     if (token != null && username != null) {
       setState(() {
-        _isLoggedIn = true;
         _username = username;
+        _token = token;
       });
     }
+  }
+
+  bool _isLoggedIn() {
+    return _token != '' && _username != '';
   }
 
   final TextEditingController _usernameController = TextEditingController();
@@ -69,11 +72,10 @@ class _LoginWidgetState extends State<LoginWidget> {
         prefs.setString('token', token);
         prefs.setString('username', username);
         // Show success popup message
-        if (context.mounted) {
-          Navigator.of(context).pop();
-          Navigator.of(context).pop();
-          Navigator.pushNamed(context, '/auth_gate');
-        }
+        setState(() {
+          _token = token;
+          _username = username;
+        });
       } else {
         // Show error popup message
         if (context.mounted) {
@@ -184,8 +186,10 @@ class _LoginWidgetState extends State<LoginWidget> {
                   TextButton(
                     onPressed: () {
                       Navigator.of(context).pop();
-                      Navigator.of(context).pop();
-                      Navigator.pushNamed(context, '/auth_gate');
+                      setState(() {
+                        _token = token;
+                        _username = username;
+                      });
                       // Navigate to home page
                     },
                     child: const Text('OK'),
@@ -277,11 +281,10 @@ class _LoginWidgetState extends State<LoginWidget> {
     final prefs = await SharedPreferences.getInstance();
     prefs.remove('token');
     prefs.remove('username');
-    if (context.mounted) {
-      Navigator.of(context)
-          .popUntil((route) => route.settings.name != 'auth_gate');
-      Navigator.of(context).pushReplacementNamed('/auth_gate');
-    }
+    setState(() {
+      _token = '';
+      _username = '';
+    });
   }
 
   Widget _buildLogin(BuildContext context) {
@@ -403,6 +406,6 @@ class _LoginWidgetState extends State<LoginWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return _isLoggedIn ? _buildAccount(context) : _buildLogin(context);
+    return _isLoggedIn() ? _buildAccount(context) : _buildLogin(context);
   }
 }
