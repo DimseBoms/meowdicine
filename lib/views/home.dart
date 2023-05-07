@@ -39,9 +39,11 @@ class _HomeState extends State<Home> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        MedicineCalendar(
-          title: 'Medisinkalender',
-          animal: _testArne,
+        Center(
+          child: MedicineCalendar(
+            title: 'Medisinkalender',
+            animal: _testArne,
+          ),
         ),
       ],
     );

@@ -1,21 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:meowdicine/database/database_helper.dart';
 
 import 'package:meowdicine/views/home.dart';
 import 'package:meowdicine/views/calendar.dart';
 import 'package:meowdicine/views/animals.dart';
 import 'package:meowdicine/views/auth_gate.dart';
 
-import 'objects/user.dart';
-
 void main() async {
-  // Avoid errors caused by flutter upgrade.
-  WidgetsFlutterBinding.ensureInitialized();
-  // Open the database and store the reference.
-  final database = DatabaseHelper().initializeDatabase();
-  // Check if the user is logged in.
-  User user = await DatabaseHelper().getUser();
-  print('User: $user');
   runApp(const MyApp());
 }
 
@@ -38,6 +28,10 @@ class MyApp extends StatelessWidget {
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
         primarySwatch: Colors.blue,
+        colorScheme: const ColorScheme.light(
+          primary: Colors.blue,
+          secondary: Colors.pink,
+        ),
       ),
       home: const AppRoot(title: 'Medisinpåminner'),
     );
