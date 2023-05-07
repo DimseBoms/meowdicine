@@ -6,7 +6,6 @@ class BackendApi {
   static const String _baseUrl = 'http://localhost:5000';
 
   static Future<http.Response> login(String username, String password) async {
-    print('Trying to log in with username $username and password $password');
     return http.post(
       Uri.parse('$_baseUrl/login'),
       headers: <String, String>{

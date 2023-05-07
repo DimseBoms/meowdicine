@@ -3,11 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:meowdicine/objects/animal.dart';
 
 class MedicineCalendar extends StatefulWidget {
-  const MedicineCalendar({Key? key, required this.title, required this.animal})
-      : super(key: key);
+  const MedicineCalendar({Key? key, required this.title}) : super(key: key);
 
   final String title;
-  final Animal animal;
 
   @override
   State<MedicineCalendar> createState() => _MedicineCalendarState();

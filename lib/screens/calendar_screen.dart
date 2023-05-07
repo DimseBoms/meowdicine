@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
-class Calendar extends StatefulWidget {
-  const Calendar({Key? key, required this.title}) : super(key: key);
+class CalendarScreen extends StatefulWidget {
+  const CalendarScreen({Key? key, required this.title}) : super(key: key);
 
   final String title;
 
   @override
-  State<Calendar> createState() => _CalendarState();
+  State<CalendarScreen> createState() => _CalendarScreenState();
 }
 
-class _CalendarState extends State<Calendar> {
+class _CalendarScreenState extends State<CalendarScreen> {
   void _showDialog(String message) {
     showDialog(
       context: context,
