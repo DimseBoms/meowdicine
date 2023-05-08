@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
+import '../objects/animal.dart';
+
 class BackendApi {
   static const String _baseUrl = 'http://localhost:5000';
 
@@ -48,15 +50,19 @@ class BackendApi {
     );
   }
 
-  static Future<http.Response> addAnimal(
-      String token, String name, String species) async {
+  static Future<http.Response> addAnimal(String token, Animal animal) async {
+    print('Trying to add animal: $animal on url: $_baseUrl/animals/create');
     return http.post(
-      Uri.parse('$_baseUrl/addAnimal'),
+      Uri.parse('$_baseUrl/animals/create'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: jsonEncode(
-          <String, String>{'token': token, 'name': name, 'species': species}),
+      body: jsonEncode(<String, dynamic>{
+        'token': token,
+        'name': animal.name,
+        'species': animal.species,
+        'birthday': animal.birthday.toIso8601String(),
+      }),
     );
   }
 

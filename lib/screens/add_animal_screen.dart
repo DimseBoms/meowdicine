@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:meowdicine/objects/animal.dart';
+import 'package:meowdicine/http/backend_api.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AddAnimalScreen extends StatefulWidget {
   const AddAnimalScreen({Key? key, required this.title}) : super(key: key);
@@ -11,19 +13,45 @@ class AddAnimalScreen extends StatefulWidget {
 }
 
 class _AddAnimalScreenState extends State<AddAnimalScreen> {
-  DateTime _selectedDate = DateTime.now();
+  DateTime _selectedDate = _getInitialDate();
+  String _token = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _initToken();
+  }
+
+  void _initToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    if (token != null) {
+      setState(() {
+        _token = token;
+      });
+    } else {
+      if (context.mounted) {
+        Navigator.of(context).pushNamedAndRemoveUntil(
+          '/login',
+          (Route<dynamic> route) => false,
+        );
+      }
+    }
+  }
+
+  static DateTime _getInitialDate() {
+    final DateTime now = DateTime.now();
+    return DateTime(now.year, now.month, now.day);
+  }
 
   Widget _showInputDatePickerFormField() {
     return InputDatePickerFormField(
-      firstDate: DateTime(1900),
-      lastDate: _selectedDate,
-      initialDate: _selectedDate,
-      onDateSubmitted: (DateTime value) {
-        setState(() {
-          _selectedDate = value;
+        firstDate: DateTime(1900),
+        lastDate: _selectedDate,
+        initialDate: _selectedDate,
+        onDateSubmitted: (DateTime value) {
+          _setDate(value);
         });
-      },
-    );
   }
 
   void _showDatePickerDialog() async {
@@ -34,9 +62,74 @@ class _AddAnimalScreenState extends State<AddAnimalScreen> {
       initialDate: _selectedDate,
     );
     if (pickedDate != null) {
-      setState(() {
-        _selectedDate = pickedDate;
-      });
+      _setDate(pickedDate);
+    }
+  }
+
+  // setDate method that makes sure to set the time of day to 00:00
+  void _setDate(DateTime date) {
+    setState(() {
+      _selectedDate = DateTime(date.year, date.month, date.day);
+    });
+  }
+
+  String _dateAsStringWithoutTime() {
+    return _selectedDate.toString().split(' ')[0];
+  }
+
+  void _createAnimal(BuildContext context, Animal animal) async {
+    try {
+      final response = await BackendApi.addAnimal(_token, animal);
+      if (response.statusCode == 201) {
+        if (context.mounted) {
+          Navigator.pop(context);
+        } else {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: const Text('Feil'),
+                content: const Text('Kunne ikke legge til dyr'),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text('OK'),
+                  ),
+                ],
+              );
+            },
+          );
+        }
+      }
+    } catch (e) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: const [
+                Text('Feil'),
+                Icon(
+                  Icons.error,
+                  color: Colors.red,
+                )
+              ],
+            ),
+            content: const Text('Klarte ikke opprette dyr'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
     }
   }
 
@@ -51,54 +144,94 @@ class _AddAnimalScreenState extends State<AddAnimalScreen> {
       ),
       body: Center(
         child: Stack(
-          alignment: Alignment.center,
           children: [
             Align(
               alignment: Alignment.topCenter,
-              child: Text(
-                'Legg til nytt dyr',
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.headlineMedium,
+              child: Padding(
+                padding: const EdgeInsets.all(25.0),
+                child: Text(
+                  'Legg til nytt dyr',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.headlineMedium,
+                ),
               ),
             ),
-            Column(
-              children: [
-                TextField(
-                  controller: _nameController,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Navn',
-                  ),
+            Center(
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.surface,
+                  borderRadius: BorderRadius.circular(25),
                 ),
-                TextField(
-                  controller: _speciesController,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Art',
-                  ),
-                ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        controller: TextEditingController(
-                            text: _selectedDate.toString()),
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: 'Fødselsdato',
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 500),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: TextField(
+                          controller: _nameController,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: 'Navn',
+                            prefixIcon: Icon(Icons.badge),
+                          ),
                         ),
-                        readOnly: true,
                       ),
-                    ),
-                    IconButton(
-                      onPressed: () {
-                        _showDatePickerDialog();
-                      },
-                      icon: const Icon(Icons.calendar_today),
-                    ),
-                  ],
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: TextField(
+                          controller: _speciesController,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: 'Art',
+                            prefixIcon: Icon(Icons.pets),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: TextField(
+                          controller: TextEditingController(
+                              text: _dateAsStringWithoutTime()),
+                          decoration: InputDecoration(
+                            border: const OutlineInputBorder(),
+                            labelText: 'Fødselsdato',
+                            prefixIcon: IconButton(
+                                onPressed: () {
+                                  _showDatePickerDialog();
+                                },
+                                icon: const Icon(Icons.calendar_today)),
+                          ),
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: const Text('Avbryt'),
+                          ),
+                          ElevatedButton(
+                            onPressed: () {
+                              final Animal animal = Animal(
+                                name: _nameController.text,
+                                species: _speciesController.text,
+                                birthday: _selectedDate,
+                              );
+                              _createAnimal(context, animal);
+                            },
+                            child: const Text('Legg til'),
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
                 ),
-              ],
+              ),
             )
           ],
         ),
