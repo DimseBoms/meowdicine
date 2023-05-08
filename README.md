@@ -1,16 +1,7 @@
-# meowdicine
+# Description
 
-A new Flutter project.
+Meowdicine is a medicine reminder application that I made for animals that need daily medicines of any kind. I got the idea because it requires a lot of care and coordination to prevent double, or missed doses when the pet is being taken care of by multiple people.
 
-## Getting Started
+The application allows you to create profiles for your pets, add their medications and schedules, and receive notifications when it’s time to give them their doses. You can also track their history to see whether they have missed any previous doses.
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+The main goal of this project was for me to practice flutter, but it should also make it easier and more convenient for pet owners to take care of their furry friends who need special attention and care.
