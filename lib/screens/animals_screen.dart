@@ -93,11 +93,11 @@ class _AnimalsScreenState extends State<AnimalsScreen> {
 
   Align _buildNoAnimals(BuildContext context) {
     return Align(
-      alignment: Alignment.topCenter,
+      alignment: Alignment.center,
       child: Padding(
         padding: const EdgeInsets.all(25.0),
         child: Text(
-          'Trykk på pluss-knappen for å legge til et dyr.',
+          'Trykk på (+) knappen nederst til høyre for å legge til dyr',
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.headlineSmall,
         ),

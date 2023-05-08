@@ -16,13 +16,20 @@ void main() async {
   final themeJson = jsonDecode(themeStr);
   final theme = ThemeDecoder.decodeThemeData(themeJson)!;
 
-  runApp(MyApp(theme: theme));
+  final darkThemeStr =
+      await rootBundle.loadString('assets/appainter_theme_dark.json');
+  final darkThemeJson = jsonDecode(darkThemeStr);
+  final darkTheme = ThemeDecoder.decodeThemeData(darkThemeJson)!;
+
+  runApp(MyApp(theme: theme, darkTheme: darkTheme));
 }
 
 class MyApp extends StatelessWidget {
   final ThemeData theme;
+  final ThemeData darkTheme;
 
-  const MyApp({Key? key, required this.theme}) : super(key: key);
+  const MyApp({Key? key, required this.theme, required this.darkTheme})
+      : super(key: key);
 
   // This widget is the root of your application.
   @override
@@ -30,6 +37,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: theme,
+      darkTheme: darkTheme,
+      themeMode: ThemeMode.system, // Follow system preference
       home: const AuthGateScreen(title: "Bruker"),
       onGenerateRoute: (settings) {
         switch (settings.name) {
