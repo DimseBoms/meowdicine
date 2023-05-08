@@ -47,7 +47,7 @@ class _AddAnimalScreenState extends State<AddAnimalScreen> {
   Widget _showInputDatePickerFormField() {
     return InputDatePickerFormField(
         firstDate: DateTime(1900),
-        lastDate: _selectedDate,
+        lastDate: DateTime.now(),
         initialDate: _selectedDate,
         onDateSubmitted: (DateTime value) {
           _setDate(value);
@@ -58,7 +58,7 @@ class _AddAnimalScreenState extends State<AddAnimalScreen> {
     final DateTime? pickedDate = await showDatePicker(
       context: context,
       firstDate: DateTime(1900),
-      lastDate: _selectedDate,
+      lastDate: DateTime.now(),
       initialDate: _selectedDate,
     );
     if (pickedDate != null) {
@@ -136,6 +136,14 @@ class _AddAnimalScreenState extends State<AddAnimalScreen> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _speciesController = TextEditingController();
 
+  TextStyle _titleStyle() {
+    return TextStyle(
+      fontSize: Theme.of(context).textTheme.headlineMedium!.fontSize,
+      fontWeight: Theme.of(context).textTheme.headlineMedium!.fontWeight,
+      color: Colors.white,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -143,21 +151,20 @@ class _AddAnimalScreenState extends State<AddAnimalScreen> {
         title: Text(widget.title),
       ),
       body: Center(
-        child: Stack(
-          children: [
-            Align(
-              alignment: Alignment.topCenter,
-              child: Padding(
-                padding: const EdgeInsets.all(25.0),
-                child: Text(
-                  'Legg til nytt dyr',
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.headlineMedium,
-                ),
+        child: Container(
+          margin: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.primary,
+            borderRadius: BorderRadius.circular(25),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Legg til dyr',
+                style: _titleStyle(),
               ),
-            ),
-            Center(
-              child: Container(
+              Container(
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.surface,
                   borderRadius: BorderRadius.circular(25),
@@ -232,8 +239,8 @@ class _AddAnimalScreenState extends State<AddAnimalScreen> {
                   ),
                 ),
               ),
-            )
-          ],
+            ],
+          ),
         ),
       ),
     );

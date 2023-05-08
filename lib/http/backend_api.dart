@@ -51,7 +51,6 @@ class BackendApi {
   }
 
   static Future<http.Response> addAnimal(String token, Animal animal) async {
-    print('Trying to add animal: $animal on url: $_baseUrl/animals/create');
     return http.post(
       Uri.parse('$_baseUrl/animals/create'),
       headers: <String, String>{
@@ -61,7 +60,7 @@ class BackendApi {
         'token': token,
         'name': animal.name,
         'species': animal.species,
-        'birthday': animal.birthday.toIso8601String(),
+        'birthday': dateTimeToDateString(animal.birthday),
       }),
     );
   }
@@ -85,5 +84,13 @@ class BackendApi {
       },
       body: jsonEncode(<String, String>{'token': token}),
     );
+  }
+
+  static String dateTimeToDateString(DateTime dateTime) {
+    String year = dateTime.year.toString().padLeft(4, '0');
+    String month = dateTime.month.toString().padLeft(2, '0');
+    String day = dateTime.day.toString().padLeft(2, '0');
+
+    return '$year-$month-$day';
   }
 }
