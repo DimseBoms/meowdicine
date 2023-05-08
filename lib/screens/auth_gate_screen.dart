@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:meowdicine/styles/styles.dart';
 import 'package:meowdicine/http/backend_api.dart';
 
 class AuthGateScreen extends StatefulWidget {
@@ -273,76 +273,94 @@ class _LoginWidgetState extends State<LoginWidget> {
         title: const Text('Logg inn'),
       ),
       body: Center(
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            Align(
-              alignment: Alignment.topCenter,
-              child: Padding(
-                padding: const EdgeInsets.all(25.0),
-                child: Text('Logg inn eller registrer deg for å fortsette',
+        child: Card(
+          margin: CardStyles.cardPadding,
+          shape: const RoundedRectangleBorder(
+            borderRadius: CardStyles.cardBorderRadius,
+          ),
+          elevation: CardStyles.cardElevation,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: CardStyles.cardTitlePadding,
+                child: Text('Logg inn',
                     textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.headlineMedium),
+                    style: Theme.of(context).textTheme.headlineSmall),
               ),
-            ),
-            ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 500),
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: TextField(
-                        controller: _usernameController,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: 'Brukernavn',
+              ConstrainedBox(
+                constraints:
+                    const BoxConstraints(maxWidth: CardStyles.maxFormWidth),
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Padding(
+                        padding: CardStyles.formInputFieldPadding,
+                        child: TextField(
+                          controller: _usernameController,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: 'Brukernavn',
+                            prefixIcon: Icon(Icons.person),
+                          ),
                         ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: TextField(
-                        controller: _passwordController,
-                        obscureText: true,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: 'Passord',
+                      Padding(
+                        padding: CardStyles.formInputFieldPadding,
+                        child: TextField(
+                          controller: _passwordController,
+                          obscureText: true,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: 'Passord',
+                            prefixIcon: Icon(Icons.lock),
+                          ),
                         ),
                       ),
-                    ),
-                    Center(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          ElevatedButton(
-                            onPressed: () {
-                              _register(context);
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor:
-                                  Theme.of(context).colorScheme.secondary,
+                      Center(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Padding(
+                              padding: CardStyles.buttonPadding,
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  _register(context);
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor:
+                                      Theme.of(context).colorScheme.tertiary,
+                                ),
+                                child: const Padding(
+                                  padding: CardStyles.buttonTextPadding,
+                                  child: Text('Registrer'),
+                                ),
+                              ),
                             ),
-                            child: const Padding(
-                              padding: EdgeInsets.all(14.0),
-                              child: Text('Registrer'),
+                            Padding(
+                              padding: CardStyles.buttonPadding,
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  _login(context);
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor:
+                                      Theme.of(context).colorScheme.primary,
+                                ),
+                                child: const Padding(
+                                  padding: CardStyles.buttonTextPadding,
+                                  child: Text('Logg inn'),
+                                ),
+                              ),
                             ),
-                          ),
-                          ElevatedButton(
-                            onPressed: () {
-                              _login(context);
-                            },
-                            child: const Padding(
-                              padding: EdgeInsets.all(14.0),
-                              child: Text('Logg inn'),
-                            ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                  ]),
-            )
-          ],
+                    ]),
+              )
+            ],
+          ),
         ),
       ),
     );

@@ -51,16 +51,13 @@ class _SidebarState extends State<Sidebar> {
       child: ListView(
         children: [
           DrawerHeader(
-            decoration: const BoxDecoration(
-              color: Colors.blue,
+            decoration: BoxDecoration(
+              color: Theme.of(context).primaryColor,
             ),
-            child: Text(
-              _createBannerText(),
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 24,
-              ),
-            ),
+            child: Text(_createBannerText(),
+                style: const TextStyle(
+                  color: Colors.white,
+                )),
           ),
           ListTile(
             selected: widget.title == 'Hjem',

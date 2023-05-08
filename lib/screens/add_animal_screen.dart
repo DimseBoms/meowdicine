@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:meowdicine/objects/animal.dart';
 import 'package:meowdicine/http/backend_api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:meowdicine/styles/styles.dart';
 
 class AddAnimalScreen extends StatefulWidget {
   const AddAnimalScreen({Key? key, required this.title}) : super(key: key);
@@ -136,14 +137,6 @@ class _AddAnimalScreenState extends State<AddAnimalScreen> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _speciesController = TextEditingController();
 
-  TextStyle _titleStyle() {
-    return TextStyle(
-      fontSize: Theme.of(context).textTheme.headlineMedium!.fontSize,
-      fontWeight: Theme.of(context).textTheme.headlineMedium!.fontWeight,
-      color: Colors.white,
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -151,78 +144,90 @@ class _AddAnimalScreenState extends State<AddAnimalScreen> {
         title: Text(widget.title),
       ),
       body: Center(
-        child: Container(
-          margin: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.primary,
-            borderRadius: BorderRadius.circular(25),
+        child: Card(
+          margin: CardStyles.cardPadding,
+          shape: const RoundedRectangleBorder(
+            borderRadius: CardStyles.cardBorderRadius,
           ),
+          elevation: CardStyles.cardElevation,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                'Legg til dyr',
-                style: _titleStyle(),
-              ),
-              Container(
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.surface,
-                  borderRadius: BorderRadius.circular(25),
+              Padding(
+                padding: CardStyles.cardTitlePadding,
+                child: Text(
+                  'Nytt dyr',
+                  style: Theme.of(context).textTheme.headlineSmall,
                 ),
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 500),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: TextField(
-                          controller: _nameController,
-                          decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
-                            labelText: 'Navn',
-                            prefixIcon: Icon(Icons.badge),
-                          ),
+              ),
+              ConstrainedBox(
+                constraints: const BoxConstraints(
+                  maxWidth: CardStyles.maxFormWidth,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: CardStyles.formInputFieldPadding,
+                      child: TextField(
+                        controller: _nameController,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Navn',
+                          prefixIcon: Icon(Icons.badge),
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: TextField(
-                          controller: _speciesController,
-                          decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
-                            labelText: 'Art',
-                            prefixIcon: Icon(Icons.pets),
-                          ),
+                    ),
+                    Padding(
+                      padding: CardStyles.formInputFieldPadding,
+                      child: TextField(
+                        controller: _speciesController,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Art',
+                          prefixIcon: Icon(Icons.pets),
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: TextField(
-                          controller: TextEditingController(
-                              text: _dateAsStringWithoutTime()),
-                          decoration: InputDecoration(
-                            border: const OutlineInputBorder(),
-                            labelText: 'Fødselsdato',
-                            prefixIcon: IconButton(
-                                onPressed: () {
-                                  _showDatePickerDialog();
-                                },
-                                icon: const Icon(Icons.calendar_today)),
-                          ),
+                    ),
+                    Padding(
+                      padding: CardStyles.formInputFieldPadding,
+                      child: TextField(
+                        controller: TextEditingController(
+                            text: _dateAsStringWithoutTime()),
+                        decoration: InputDecoration(
+                          border: const OutlineInputBorder(),
+                          labelText: 'Fødselsdato',
+                          prefixIcon: IconButton(
+                              onPressed: () {
+                                _showDatePickerDialog();
+                              },
+                              icon: const Icon(Icons.calendar_today)),
                         ),
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          ElevatedButton(
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Padding(
+                          padding: CardStyles.buttonPadding,
+                          child: ElevatedButton(
                             onPressed: () {
                               Navigator.pop(context);
                             },
-                            child: const Text('Avbryt'),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor:
+                                  Theme.of(context).colorScheme.error,
+                            ),
+                            child: const Padding(
+                              padding: CardStyles.buttonTextPadding,
+                              child: Text('Avbryt'),
+                            ),
                           ),
-                          ElevatedButton(
+                        ),
+                        Padding(
+                          padding: CardStyles.buttonPadding,
+                          child: ElevatedButton(
                             onPressed: () {
                               final Animal animal = Animal(
                                 name: _nameController.text,
@@ -231,12 +236,19 @@ class _AddAnimalScreenState extends State<AddAnimalScreen> {
                               );
                               _createAnimal(context, animal);
                             },
-                            child: const Text('Legg til'),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor:
+                                  Theme.of(context).colorScheme.primary,
+                            ),
+                            child: const Padding(
+                              padding: CardStyles.buttonTextPadding,
+                              child: Text('Legg til'),
+                            ),
                           ),
-                        ],
-                      )
-                    ],
-                  ),
+                        ),
+                      ],
+                    )
+                  ],
                 ),
               ),
             ],

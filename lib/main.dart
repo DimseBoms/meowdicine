@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:json_theme/json_theme.dart';
+import 'package:flutter/services.dart'; // For rootBundle
+import 'dart:convert'; // For jsonDecode
 
 import 'package:meowdicine/screens/home_screen.dart';
 import 'package:meowdicine/screens/calendar_screen.dart';
@@ -7,24 +10,26 @@ import 'package:meowdicine/screens/auth_gate_screen.dart';
 import 'package:meowdicine/screens/add_animal_screen.dart';
 
 void main() async {
-  runApp(const MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+
+  final themeStr = await rootBundle.loadString('assets/appainter_theme.json');
+  final themeJson = jsonDecode(themeStr);
+  final theme = ThemeDecoder.decodeThemeData(themeJson)!;
+
+  runApp(MyApp(theme: theme));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final ThemeData theme;
+
+  const MyApp({Key? key, required this.theme}) : super(key: key);
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        colorScheme: const ColorScheme.light(
-          primary: Colors.blue,
-          secondary: Colors.pink,
-        ),
-      ),
+      theme: theme,
       home: const AuthGateScreen(title: "Bruker"),
       onGenerateRoute: (settings) {
         switch (settings.name) {
