@@ -4,6 +4,7 @@ import 'package:meowdicine/screens/home_screen.dart';
 import 'package:meowdicine/screens/calendar_screen.dart';
 import 'package:meowdicine/screens/animals_screen.dart';
 import 'package:meowdicine/screens/auth_gate_screen.dart';
+import 'package:meowdicine/screens/add_animal_screen.dart';
 
 void main() async {
   runApp(const MyApp());
@@ -24,7 +25,7 @@ class MyApp extends StatelessWidget {
           secondary: Colors.pink,
         ),
       ),
-      home: const HomeScreen(title: 'Hjem'),
+      home: const AuthGateScreen(title: "Bruker"),
       onGenerateRoute: (settings) {
         switch (settings.name) {
           case '/home':
@@ -42,11 +43,14 @@ class MyApp extends StatelessWidget {
                 builder: (context) => const AuthGateScreen(
                       title: "Bruker",
                     ));
+          case '/add_animal':
+            return MaterialPageRoute(
+                builder: (context) => const AddAnimalScreen(
+                      title: "Legg til dyr",
+                    ));
           default:
             return MaterialPageRoute(
-                builder: (context) => const HomeScreen(
-                      title: "Hjem",
-                    ));
+                builder: (context) => const AuthGateScreen(title: "Bruker"));
         }
       },
     );

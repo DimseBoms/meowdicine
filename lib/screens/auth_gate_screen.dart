@@ -46,15 +46,10 @@ class _LoginWidgetState extends State<LoginWidget> {
     final token = prefs.getString('token');
     final username = prefs.getString('username');
     if (token != null && username != null) {
-      setState(() {
-        _username = username;
-        _token = token;
-      });
+      if (context.mounted) {
+        Navigator.pushReplacementNamed(context, '/home');
+      }
     }
-  }
-
-  bool _isLoggedIn() {
-    return _token != '' && _username != '';
   }
 
   final TextEditingController _usernameController = TextEditingController();
@@ -71,11 +66,9 @@ class _LoginWidgetState extends State<LoginWidget> {
         final token = jsonDecode(response.body)['token'];
         prefs.setString('token', token);
         prefs.setString('username', username);
-        // Show success popup message
-        setState(() {
-          _token = token;
-          _username = username;
-        });
+        if (context.mounted) {
+          Navigator.pushReplacementNamed(context, '/home');
+        }
       } else {
         // Show error popup message
         if (context.mounted) {
@@ -186,10 +179,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                   TextButton(
                     onPressed: () {
                       Navigator.of(context).pop();
-                      setState(() {
-                        _token = token;
-                        _username = username;
-                      });
+                      Navigator.pushReplacementNamed(context, '/home');
                       // Navigate to home page
                     },
                     child: const Text('OK'),
@@ -277,16 +267,6 @@ class _LoginWidgetState extends State<LoginWidget> {
     }
   }
 
-  void _logout(BuildContext context) async {
-    final prefs = await SharedPreferences.getInstance();
-    prefs.remove('token');
-    prefs.remove('username');
-    setState(() {
-      _token = '';
-      _username = '';
-    });
-  }
-
   Widget _buildLogin(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -368,44 +348,8 @@ class _LoginWidgetState extends State<LoginWidget> {
     );
   }
 
-  Widget _buildAccount(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Konto'),
-      ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Text(
-                'Du er logget inn som $_username',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 20),
-              ),
-              Text(
-                username,
-                style: const TextStyle(fontSize: 20),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  _logout(context);
-                },
-                child: const Padding(
-                  padding: EdgeInsets.all(14.0),
-                  child: Text('Logg ut'),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    return _isLoggedIn() ? _buildAccount(context) : _buildLogin(context);
+    return _buildLogin(context);
   }
 }

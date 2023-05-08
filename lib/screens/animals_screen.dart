@@ -43,33 +43,38 @@ class _AnimalsScreenState extends State<AnimalsScreen> {
             });
           }
         }
-      } else {
-        if (context.mounted) {
-          Navigator.pushNamed(context, '/auth_gate');
-        }
-      }
-    } else {
-      if (context.mounted) {
-        Navigator.pushNamed(context, '/auth_gate');
       }
     }
+  }
+
+  bool _isLoggedIn() {
+    return _token != '';
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      drawer: const Sidebar(
-        title: "Dyr",
-      ),
-      body: Stack(
-        children: <Widget>[
-          _buildNoAnimals(context),
-        ],
-      ),
-    );
+        appBar: AppBar(
+          title: Text(widget.title),
+        ),
+        drawer: const Sidebar(
+          title: "Dyr",
+        ),
+        body: Stack(
+          children: <Widget>[
+            _buildNoAnimals(context),
+          ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          focusColor: Colors.blue,
+          onPressed: () {
+            Navigator.pushNamed(context, '/add_animal', arguments: {
+              'token': _token,
+            });
+          },
+          tooltip: 'Legg til dyr',
+          child: const Icon(Icons.add),
+        ));
   }
 
   Widget _buildAnimalsGrid() {

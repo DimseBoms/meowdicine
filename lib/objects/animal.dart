@@ -5,7 +5,6 @@ class Animal {
   String name;
   DateTime birthday;
   String species;
-  List<Prescription> prescriptions;
   Map<DateTime, List<Prescription>> prescriptionHistory;
   List<Map<TimeOfDay, Prescription>> dailyPrescriptions;
 
@@ -13,7 +12,6 @@ class Animal {
       {required this.name,
       required this.birthday,
       required this.species,
-      this.prescriptions = const <Prescription>[],
       this.prescriptionHistory = const <DateTime, List<Prescription>>{},
       this.dailyPrescriptions = const <Map<TimeOfDay, Prescription>>[]});
 
@@ -27,14 +25,6 @@ class Animal {
 
   void setSpecies(String species) {
     this.species = species;
-  }
-
-  void addPrescription(Prescription prescription) {
-    prescriptions.add(prescription);
-  }
-
-  void removePrescription(Prescription prescription) {
-    prescriptions.remove(prescription);
   }
 
   void addPrescriptionToHistory(Prescription prescription, DateTime date) {
@@ -61,38 +51,27 @@ class Animal {
         name: json['name'],
         birthday: DateTime.parse(json['birthday']),
         species: json['species'],
-        prescriptions: json['prescriptions']
-            .map<Prescription>(
-                (prescription) => Prescription.fromJson(prescription))
-            .toList(),
-        prescriptionHistory: json['prescription_history']
-            .map<DateTime, List<Prescription>>((key, value) => MapEntry(
-                DateTime.parse(key),
-                value
-                    .map<Prescription>(
-                        (prescription) => Prescription.fromJson(prescription))
-                    .toList())),
-        dailyPrescriptions: json['daily_prescriptions']
-            .map<Map<TimeOfDay, Prescription>>((key, value) => MapEntry(
-                TimeOfDay.fromDateTime(DateTime.parse(key)),
-                value
-                    .map<Prescription>((prescription) => Prescription.fromJson(prescription))
-                    .toList())));
+        prescriptionHistory: json['prescriptionHistory'],
+        dailyPrescriptions: json['dailyPrescriptions']);
   }
 
   Map<String, dynamic> toJson() {
     return {
       'name': name,
-      'birthday': birthday.toIso8601String(),
+      'birthday': birthday.toString(),
       'species': species,
-      'prescriptions':
-          prescriptions.map((prescription) => prescription.toJson()).toList(),
-      'prescription_history': prescriptionHistory.map((key, value) => MapEntry(
-          key.toIso8601String(),
-          value.map((prescription) => prescription.toJson()).toList())),
-      'daily_prescriptions': dailyPrescriptions.map((key, value) => MapEntry(
-          key.toString(),
-          value.map((prescription) => prescription.toJson()).toList()))
+      'prescriptionHistory': prescriptionHistory,
+      'dailyPrescriptions': dailyPrescriptions
+    };
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'name': name,
+      'birthday': birthday.toString(),
+      'species': species,
+      'prescriptionHistory': prescriptionHistory,
+      'dailyPrescriptions': dailyPrescriptions
     };
   }
 }
