@@ -18,7 +18,7 @@ class _AuthGateScreenState extends State<AuthGateScreen> {
   Widget build(BuildContext context) {
     // Widget containing text fields and buttons for logging in
     // or registering a new user
-    return LoginWidget();
+    return const LoginWidget();
   }
 }
 
@@ -32,9 +32,6 @@ class LoginWidget extends StatefulWidget {
 }
 
 class _LoginWidgetState extends State<LoginWidget> {
-  String _username = '';
-  String _token = '';
-
   @override
   void initState() {
     super.initState();

@@ -4,10 +4,8 @@ import 'package:flutter/services.dart'; // For rootBundle
 import 'dart:convert'; // For jsonDecode
 
 import 'package:meowdicine/screens/home_screen.dart';
-import 'package:meowdicine/screens/calendar_screen.dart';
 import 'package:meowdicine/screens/animals_screen.dart';
 import 'package:meowdicine/screens/auth_gate_screen.dart';
-import 'package:meowdicine/screens/add_animal_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -56,11 +54,6 @@ class MyApp extends StatelessWidget {
             return MaterialPageRoute(
                 builder: (context) => const AuthGateScreen(
                       title: "Bruker",
-                    ));
-          case '/add_animal':
-            return MaterialPageRoute(
-                builder: (context) => const AddAnimalScreen(
-                      title: "Legg til dyr",
                     ));
           default:
             return MaterialPageRoute(

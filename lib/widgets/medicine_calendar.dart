@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:meowdicine/objects/animal.dart';
-
 class MedicineCalendar extends StatefulWidget {
   const MedicineCalendar({Key? key, required this.title}) : super(key: key);
 
@@ -78,8 +76,7 @@ class _MedicineCalendarState extends State<MedicineCalendar> {
                 firstDate: DateTime.now().subtract(const Duration(days: 730)),
                 lastDate: DateTime.now(),
                 onDateChanged: (DateTime value) {
-                  print(
-                      'Date selected: ${value.day}.${value.month}.${value.year}');
+                  // Do something with the new date
                 },
               ),
             ),

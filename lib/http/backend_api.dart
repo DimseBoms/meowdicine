@@ -41,7 +41,6 @@ class BackendApi {
   }
 
   static Future<http.Response> getAnimals(String token, String username) async {
-    print('$_baseUrl/animals?token=$token&username=$username');
     return http.get(
       Uri.parse('$_baseUrl/animals?token=$token&username=$username'),
     );

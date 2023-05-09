@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:meowdicine/http/backend_api.dart';
@@ -42,14 +43,16 @@ class _SidebarState extends State<Sidebar> {
       try {
         await BackendApi.logout(token, username);
       } catch (e) {
-        print(e);
+        if (kDebugMode) {
+          print(e);
+        }
       }
     }
     prefs.remove('token');
     prefs.remove('username');
     if (context.mounted) {
       Navigator.of(context).pushNamedAndRemoveUntil(
-        '/login',
+        '/auth_gate',
         (Route<dynamic> route) => false,
       );
     }

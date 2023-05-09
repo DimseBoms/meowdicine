@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class CardStyles {
-  static const cardTitlePadding = EdgeInsets.only(top: 16, left: 36, right: 36);
+  static const cardTitlePadding =
+      EdgeInsets.only(top: 16, left: 36, right: 36, bottom: 16);
   static const cardPadding = EdgeInsets.all(16);
   static const cardBorderRadius = BorderRadius.all(Radius.circular(8));
   static const formContainerPadding = EdgeInsets.all(16);

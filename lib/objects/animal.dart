@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:meowdicine/objects/prescription.dart';
 
 class Animal {
+  int id;
   String name;
   DateTime birthday;
   String species;
@@ -12,6 +13,7 @@ class Animal {
       {required this.name,
       required this.birthday,
       required this.species,
+      required this.id,
       this.prescriptionHistory = const <DateTime, List<Prescription>>{},
       this.dailyPrescriptions = const <Map<TimeOfDay, Prescription>>[]});
 
@@ -48,11 +50,11 @@ class Animal {
 
   factory Animal.fromJson(Map<String, dynamic> json) {
     return Animal(
-        name: json['name'],
-        birthday: DateTime.parse(json['birthday']),
-        species: json['species'],
-        prescriptionHistory: json['prescriptionHistory'],
-        dailyPrescriptions: json['dailyPrescriptions']);
+      name: json['name'],
+      birthday: DateTime.parse(json['birthday']),
+      species: json['species'],
+      id: json['id'],
+    );
   }
 
   Map<String, dynamic> toJson() {
@@ -60,8 +62,7 @@ class Animal {
       'name': name,
       'birthday': birthday.toString(),
       'species': species,
-      'prescriptionHistory': prescriptionHistory,
-      'dailyPrescriptions': dailyPrescriptions
+      'id': id,
     };
   }
 
@@ -70,8 +71,7 @@ class Animal {
       'name': name,
       'birthday': birthday.toString(),
       'species': species,
-      'prescriptionHistory': prescriptionHistory,
-      'dailyPrescriptions': dailyPrescriptions
+      'id': id,
     };
   }
 }

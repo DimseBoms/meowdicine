@@ -1,9 +1,9 @@
 class Prescription {
   String name;
   String description;
-  String dosage; // TODO: Change to Double
+  String dosage;
   String unit;
-  String frequency; // TODO: Change to Int
+  String frequency;
 
   Prescription(
       {required this.name,
