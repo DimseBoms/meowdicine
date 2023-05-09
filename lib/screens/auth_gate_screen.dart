@@ -4,6 +4,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:meowdicine/styles/styles.dart';
 import 'package:meowdicine/http/backend_api.dart';
 
+// TODO: Refactor this screen to take use of the new UserController
+
 class AuthGateScreen extends StatefulWidget {
   const AuthGateScreen({Key? key, required this.title}) : super(key: key);
 

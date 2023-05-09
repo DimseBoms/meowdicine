@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:meowdicine/controllers/animals_controller.dart';
+import 'package:meowdicine/controllers/user_controller.dart';
 import 'package:meowdicine/widgets/animal_form.dart';
 import 'package:meowdicine/widgets/animals_grid.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -24,8 +26,6 @@ class AnimalsScreen extends StatefulWidget {
 }
 
 class _AnimalsScreenState extends State<AnimalsScreen> {
-  String _token = '';
-  String _username = '';
   List<Animal> _animals = [];
 
   final TextEditingController _nameController = TextEditingController();
@@ -95,50 +95,42 @@ class _AnimalsScreenState extends State<AnimalsScreen> {
   }
 
   _fetchData() async {
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('token');
-    final username = prefs.getString('username');
-    if (token != null && username != null) {
-      setState(() {
-        _token = token;
-        _username = username;
-      });
-      final response = await BackendApi.getAnimals(token, username);
-      if (response.statusCode == 200) {
-        final animals = jsonDecode(response.body)['animals'];
-        if (animals != null) {
-          setState(() {
-            _animals = animals
-                .map<Animal>((animal) => Animal.fromJson(animal))
-                .toList();
-          });
-        }
-      } else {
-        if (context.mounted) {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: const Text('Feil'),
-                content: Text('Kunne ikke hente dyr: ${response.body}'),
-                actions: <Widget>[
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text('OK'),
-                  ),
-                ],
-              );
-            },
-          );
-        }
+    UserController.checkCredentials(context);
+    try {
+      List<Animal> fetchedAnimals = await AnimalsController.fetchAnimals();
+      if (fetchedAnimals.isNotEmpty) {
+        setState(() {
+          _animals = fetchedAnimals;
+        });
       }
-    } else {
+    } catch (e) {
       if (context.mounted) {
-        Navigator.of(context).pushNamedAndRemoveUntil(
-          '/auth_gate',
-          (Route<dynamic> route) => false,
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text('Feil'),
+                  Icon(
+                    Icons.wifi_off,
+                    color: Theme.of(context).colorScheme.error,
+                  )
+                ],
+              ),
+              content: const Text(
+                  'Klarte ikke hente dyr. Sjekk nettverksinstillingene dine og prøv igjen.'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text('OK'),
+                ),
+              ],
+            );
+          },
         );
       }
     }
@@ -146,11 +138,13 @@ class _AnimalsScreenState extends State<AnimalsScreen> {
 
   void _createAnimal(BuildContext context, Animal animal) async {
     try {
-      final response = await BackendApi.addAnimal(_token, _username, animal);
-      if (response.statusCode == 200) {
+      bool createdAnimal = await AnimalsController.addAnimal(animal);
+      if (createdAnimal) {
+        setState(() {
+          _animals.add(animal);
+        });
         if (context.mounted) {
           Navigator.pop(context);
-          _fetchData();
         }
       } else {
         if (context.mounted) {
@@ -159,6 +153,7 @@ class _AnimalsScreenState extends State<AnimalsScreen> {
             builder: (BuildContext context) {
               return AlertDialog(
                 title: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Text('Feil'),
                     Icon(
@@ -167,7 +162,7 @@ class _AnimalsScreenState extends State<AnimalsScreen> {
                     )
                   ],
                 ),
-                content: const Text('Kunne ikke legge til dyr'),
+                content: const Text('Klarte ikke opprette dyr. Prøv igjen.'),
                 actions: [
                   TextButton(
                     onPressed: () {
@@ -182,32 +177,35 @@ class _AnimalsScreenState extends State<AnimalsScreen> {
         }
       }
     } catch (e) {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text('Feil'),
-                Icon(
-                  Icons.error,
-                  color: Theme.of(context).colorScheme.error,
-                )
-              ],
-            ),
-            content: const Text('Klarte ikke opprette dyr'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text('OK'),
+      if (context.mounted) {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text('Feil'),
+                  Icon(
+                    Icons.wifi_off,
+                    color: Theme.of(context).colorScheme.error,
+                  )
+                ],
               ),
-            ],
-          );
-        },
-      );
+              content: const Text(
+                  'Klarte ikke opprette dyr. Sjekk nettverksinnstillingene dine og prøv igjen.'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
+      }
     }
   }
 

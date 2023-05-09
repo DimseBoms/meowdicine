@@ -5,14 +5,27 @@ class NoAnimals extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        children: [
-          Text('Du har ingen dyr registrert. ',
-              style: Theme.of(context).textTheme.headlineSmall),
-          Text('Trykk på (+) knappen nederst til høyre for å legge til et.',
-              style: Theme.of(context).textTheme.headlineSmall),
-        ],
+    return Padding(
+      padding: const EdgeInsets.all(48.0),
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text('Du har ingen dyr registrert.',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.headlineSmall),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text(
+                  'Trykk på (+) knappen nederst til høyre for å legge til et.',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.headlineSmall),
+            ),
+          ],
+        ),
       ),
     );
   }
