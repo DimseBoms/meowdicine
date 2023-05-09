@@ -44,12 +44,6 @@ class _MedicineCalendarState extends State<MedicineCalendar> {
     return '$dayOfWeek, den $dayNumber. $monthName ${DateTime.now().year}';
   }
 
-  _calendarTitleStyle() {
-    return Theme.of(context).textTheme.headlineSmall?.copyWith(
-          color: Colors.white,
-        );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -57,14 +51,15 @@ class _MedicineCalendarState extends State<MedicineCalendar> {
           maxWidth: 800,
         ),
         decoration: BoxDecoration(
-          color: Colors.blue,
+          color: Theme.of(context).colorScheme.primary,
           borderRadius: BorderRadius.circular(10),
         ),
         child: Column(
           children: [
             Padding(
               padding: const EdgeInsets.all(16.0),
-              child: Text(_currentDatePretty(), style: _calendarTitleStyle()),
+              child: Text(_currentDatePretty(),
+                  style: Theme.of(context).textTheme.headlineSmall),
             ),
             Container(
               decoration: BoxDecoration(

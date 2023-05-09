@@ -53,7 +53,7 @@ class _AnimalsScreenState extends State<AnimalsScreen> {
               )
             : const NoAnimals(),
         floatingActionButton: FloatingActionButton(
-          focusColor: Colors.blue,
+          focusColor: Theme.of(context).colorScheme.primary,
           onPressed: () {
             showDialog(
                 context: context,
@@ -159,11 +159,11 @@ class _AnimalsScreenState extends State<AnimalsScreen> {
             builder: (BuildContext context) {
               return AlertDialog(
                 title: Row(
-                  children: const [
-                    Text('Feil'),
+                  children: [
+                    const Text('Feil'),
                     Icon(
                       Icons.error,
-                      color: Colors.red,
+                      color: Theme.of(context).colorScheme.error,
                     )
                   ],
                 ),
@@ -188,11 +188,11 @@ class _AnimalsScreenState extends State<AnimalsScreen> {
           return AlertDialog(
             title: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: const [
-                Text('Feil'),
+              children: [
+                const Text('Feil'),
                 Icon(
                   Icons.error,
-                  color: Colors.red,
+                  color: Theme.of(context).colorScheme.error,
                 )
               ],
             ),

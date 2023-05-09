@@ -75,11 +75,11 @@ class _LoginWidgetState extends State<LoginWidget> {
               return AlertDialog(
                 title: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: const [
-                    Text('Klarte ikke å logge inn'),
+                  children: [
+                    const Text('Klarte ikke å logge inn'),
                     Icon(
                       Icons.error,
-                      color: Colors.red,
+                      color: Theme.of(context).colorScheme.error,
                     ),
                   ],
                 ),
@@ -114,11 +114,11 @@ class _LoginWidgetState extends State<LoginWidget> {
             return AlertDialog(
               title: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: const [
-                  Text('Klarte ikke å logge inn'),
+                children: [
+                  const Text('Klarte ikke å logge inn'),
                   Icon(
                     Icons.wifi_off,
-                    color: Colors.yellow,
+                    color: Theme.of(context).colorScheme.error,
                   )
                 ],
               ),
@@ -163,11 +163,11 @@ class _LoginWidgetState extends State<LoginWidget> {
               return AlertDialog(
                 title: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: const [
-                    Text('Suksess'),
+                  children: [
+                    const Text('Suksess'),
                     Icon(
                       Icons.check_circle_outline,
-                      color: Colors.green,
+                      color: Theme.of(context).colorScheme.primary,
                     ),
                   ],
                 ),
@@ -195,11 +195,11 @@ class _LoginWidgetState extends State<LoginWidget> {
               return AlertDialog(
                 title: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: const [
-                    Text('Klarte ikke å registrere bruker'),
+                  children: [
+                    const Text('Klarte ikke å registrere bruker'),
                     Icon(
                       Icons.error,
-                      color: Colors.red,
+                      color: Theme.of(context).colorScheme.error,
                     ),
                   ],
                 ),
@@ -234,9 +234,10 @@ class _LoginWidgetState extends State<LoginWidget> {
             return AlertDialog(
               title: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: const [
-                  Text('Klarte ikke å registrere bruker'),
-                  Icon(Icons.wifi_off, color: Colors.yellow),
+                children: [
+                  const Text('Klarte ikke å registrere bruker'),
+                  Icon(Icons.wifi_off,
+                      color: Theme.of(context).colorScheme.error),
                 ],
               ),
               content: const Text(

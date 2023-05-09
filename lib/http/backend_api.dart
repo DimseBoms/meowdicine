@@ -63,6 +63,24 @@ class BackendApi {
     );
   }
 
+  static Future<http.Response> updateAnimal(
+      String token, String username, Animal animal) async {
+    return http.post(
+      Uri.parse('$_baseUrl/animals/update'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        'token': token,
+        'username': username,
+        'name': animal.name,
+        'species': animal.species,
+        'birthday': dateTimeToDateString(animal.birthday),
+        'id': animal.id,
+      }),
+    );
+  }
+
   static Future<http.Response> deleteAnimal(
       String token, String username, String animalId) async {
     return http.post(
