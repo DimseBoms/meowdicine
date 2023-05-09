@@ -1,9 +1,7 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:meowdicine/widgets/message_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:meowdicine/styles/styles.dart';
-import 'package:meowdicine/http/backend_api.dart';
 
 import '../controllers/user_controller.dart';
 
