@@ -14,9 +14,9 @@ class MessageDialog {
     Widget icon;
     switch (type) {
       case MessageType.success:
-        icon = Icon(
+        icon = const Icon(
           Icons.check_circle_outline,
-          color: Theme.of(context).colorScheme.primary,
+          color: Colors.green,
         );
         break;
       case MessageType.warning:

@@ -4,6 +4,7 @@ import 'package:meowdicine/controllers/animals_controller.dart';
 import '../objects/animal.dart';
 import '../widgets/animal_form.dart';
 import '../styles/styles.dart';
+import '../widgets/message_dialog.dart';
 
 class ShowAnimal extends StatefulWidget {
   const ShowAnimal({Key? key, required this.animal}) : super(key: key);
@@ -115,64 +116,30 @@ class _ShowAnimalState extends State<ShowAnimal> {
       bool animalUpdated = await AnimalsController.updateAnimal(animal);
       if (animalUpdated) {
         if (context.mounted) {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text('Suksess'),
-                    Icon(
-                      Icons.check_circle,
-                      color: Theme.of(context).colorScheme.primary,
-                    )
-                  ],
-                ),
-                content: Text('${widget.animal.name} ble oppdatert.'),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: const Text('OK'),
-                  ),
-                ],
-              );
-            },
-          );
+          MessageDialog.showMessageDialog(
+              context: context,
+              type: MessageType.success,
+              title: 'Suksess',
+              message: '${_nameController.text} ble oppdatert.',
+              buttonText: 'ok',
+              onPressed: () {
+                Navigator.of(context).pop();
+              });
         }
       } else {
         throw Exception('Klarte ikke oppdatere');
       }
     } catch (e) {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text('Feil'),
-                Icon(
-                  Icons.wifi_off,
-                  color: Theme.of(context).colorScheme.error,
-                )
-              ],
-            ),
-            content: const Text(
-                'Klarte ikke oppdatere. Sjekk nettverksinstillingene dine og prøv igjen.'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text('OK'),
-              ),
-            ],
-          );
-        },
-      );
+      MessageDialog.showMessageDialog(
+          context: context,
+          type: MessageType.networkError,
+          title: 'Nettverksfeil',
+          message:
+              'Klarte ikke å koble til server. Sjekk internettforbindelsen din.',
+          buttonText: 'ok',
+          onPressed: () {
+            Navigator.of(context).pop();
+          });
     }
   }
 

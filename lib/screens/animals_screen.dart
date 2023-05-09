@@ -6,6 +6,7 @@ import 'package:meowdicine/widgets/animals_grid.dart';
 
 import '../objects/animal.dart';
 import '../styles/styles.dart';
+import '../widgets/message_dialog.dart';
 import '../widgets/sidebar.dart';
 import '../widgets/no_animals.dart';
 
@@ -101,33 +102,16 @@ class _AnimalsScreenState extends State<AnimalsScreen> {
       }
     } catch (e) {
       if (context.mounted) {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text('Feil'),
-                  Icon(
-                    Icons.wifi_off,
-                    color: Theme.of(context).colorScheme.error,
-                  )
-                ],
-              ),
-              content: const Text(
-                  'Klarte ikke hente dyr. Sjekk nettverksinstillingene dine og prøv igjen.'),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: const Text('OK'),
-                ),
-              ],
-            );
-          },
-        );
+        MessageDialog.showMessageDialog(
+            context: context,
+            type: MessageType.networkError,
+            title: 'Nettverksfeil',
+            message:
+                'Klarte ikke å koble til server. Sjekk internettforbindelsen din.',
+            buttonText: 'ok',
+            onPressed: () {
+              Navigator.of(context).pop();
+            });
       }
     }
   }
@@ -144,63 +128,29 @@ class _AnimalsScreenState extends State<AnimalsScreen> {
         }
       } else {
         if (context.mounted) {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text('Feil'),
-                    Icon(
-                      Icons.error,
-                      color: Theme.of(context).colorScheme.error,
-                    )
-                  ],
-                ),
-                content: const Text('Klarte ikke opprette dyr. Prøv igjen.'),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: const Text('OK'),
-                  ),
-                ],
-              );
-            },
-          );
+          MessageDialog.showMessageDialog(
+              context: context,
+              type: MessageType.error,
+              title: 'Feil',
+              message: 'Klarte ikke opprette dyr. Prøv igjen.',
+              buttonText: 'ok',
+              onPressed: () {
+                Navigator.of(context).pop();
+              });
         }
       }
     } catch (e) {
       if (context.mounted) {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text('Feil'),
-                  Icon(
-                    Icons.wifi_off,
-                    color: Theme.of(context).colorScheme.error,
-                  )
-                ],
-              ),
-              content: const Text(
-                  'Klarte ikke opprette dyr. Sjekk nettverksinnstillingene dine og prøv igjen.'),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: const Text('OK'),
-                ),
-              ],
-            );
-          },
-        );
+        MessageDialog.showMessageDialog(
+            context: context,
+            type: MessageType.networkError,
+            title: 'Nettverksfeil',
+            message:
+                'Klarte ikke å koble til server. Sjekk internettforbindelsen din.',
+            buttonText: 'ok',
+            onPressed: () {
+              Navigator.of(context).pop();
+            });
       }
     }
   }
