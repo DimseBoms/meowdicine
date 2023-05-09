@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:meowdicine/objects/animal.dart';
 
 import '../styles/styles.dart';
 
@@ -7,11 +8,13 @@ class AnimalForm extends StatefulWidget {
       {Key? key,
       required this.nameController,
       required this.speciesController,
-      required this.selectedDate})
+      required this.selectedDate,
+      required this.animal})
       : super(key: key);
 
   final TextEditingController nameController;
   final TextEditingController speciesController;
+  final Animal? animal;
   DateTime selectedDate;
 
   @override
@@ -20,6 +23,16 @@ class AnimalForm extends StatefulWidget {
 
 class _AnimalFormState extends State<AnimalForm> {
   @override
+  initState() {
+    super.initState();
+    if (widget.animal != null) {
+      widget.nameController.text = widget.animal!.name;
+      widget.speciesController.text = widget.animal!.species;
+      widget.selectedDate = widget.animal!.birthday;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -27,7 +40,7 @@ class _AnimalFormState extends State<AnimalForm> {
         Padding(
           padding: CardStyles.cardTitlePadding,
           child: Text(
-            'Nytt dyr',
+            widget.animal == null ? 'Nytt dyr' : 'Rediger',
             style: Theme.of(context).textTheme.headlineSmall,
           ),
         ),

@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:meowdicine/http/backend_api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserController {
@@ -15,9 +18,29 @@ class UserController {
     }
   }
 
-  static Future<void> register() async {}
+  static Future<bool> register(String username, String password) async {
+    final response = await BackendApi.register(username, password);
+    if (response.statusCode == 200) {
+      final prefs = await SharedPreferences.getInstance();
+      prefs.setString('token', jsonDecode(response.body)['token']);
+      prefs.setString('username', username);
+      return true;
+    } else {
+      return false;
+    }
+  }
 
-  static Future<void> login() async {}
+  static Future<bool> login(String username, String password) async {
+    final response = await BackendApi.login(username, password);
+    if (response.statusCode == 200) {
+      final prefs = await SharedPreferences.getInstance();
+      prefs.setString('token', jsonDecode(response.body)['token']);
+      prefs.setString('username', username);
+      return true;
+    } else {
+      return false;
+    }
+  }
 
   static Future<String> getToken() {
     final prefs = SharedPreferences.getInstance();

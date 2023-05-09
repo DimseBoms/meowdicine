@@ -8,7 +8,7 @@ class CardStyles {
   static const formContainerPadding = EdgeInsets.all(16);
   static const formInputFieldPadding = EdgeInsets.all(16);
   static const buttonTextPadding = EdgeInsets.all(12);
-  static const buttonPadding = EdgeInsets.only(bottom: 16);
+  static const buttonPadding = EdgeInsets.all(16);
   static const maxFormWidth = 500.0;
   static const cardElevation = 4.0;
 }

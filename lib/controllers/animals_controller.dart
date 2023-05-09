@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:flutter/foundation.dart';
 import 'package:meowdicine/controllers/user_controller.dart';
 import 'package:meowdicine/objects/animal.dart';
 
@@ -39,8 +38,15 @@ class AnimalsController {
     return false;
   }
 
-  static Future<Animal> updateAnimal(String token, Animal animal) async {
-    return animal;
+  static Future<bool> updateAnimal(Animal animal) async {
+    final response = await BackendApi.updateAnimal(animal);
+    if (response.statusCode == 200) {
+      final animal = jsonDecode(response.body)['animal'];
+      if (animal != null) {
+        return true;
+      }
+    }
+    return false;
   }
 
   static Future<void> deleteAnimal(String token, Animal animal) async {}

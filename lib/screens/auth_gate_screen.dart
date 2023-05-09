@@ -1,10 +1,11 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:meowdicine/widgets/message_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:meowdicine/styles/styles.dart';
 import 'package:meowdicine/http/backend_api.dart';
 
-// TODO: Refactor this screen to take use of the new UserController
+import '../controllers/user_controller.dart';
 
 class AuthGateScreen extends StatefulWidget {
   const AuthGateScreen({Key? key, required this.title}) : super(key: key);
@@ -51,223 +52,8 @@ class _LoginWidgetState extends State<LoginWidget> {
     }
   }
 
-  final TextEditingController _usernameController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-
-  String get username => _usernameController.text;
-  String get password => _passwordController.text;
-
-  void _login(BuildContext context) async {
-    try {
-      final response = await BackendApi.login(username, password);
-      if (response.statusCode == 200) {
-        final prefs = await SharedPreferences.getInstance();
-        final token = jsonDecode(response.body)['token'];
-        prefs.setString('token', token);
-        prefs.setString('username', username);
-        if (context.mounted) {
-          Navigator.pushReplacementNamed(context, '/home');
-        }
-      } else {
-        // Show error popup message
-        if (context.mounted) {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text('Klarte ikke å logge inn'),
-                    Icon(
-                      Icons.error,
-                      color: Theme.of(context).colorScheme.error,
-                    ),
-                  ],
-                ),
-                content: const Text(
-                    'Feil brukernavn eller passord. Sjekk at du har skrevet riktig.'),
-                actions: <Widget>[
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: const Padding(
-                        padding: EdgeInsets.all(14.0),
-                        child: Text('OK'),
-                      ),
-                    ),
-                  ),
-                ],
-              );
-            },
-          );
-        }
-      }
-    } catch (e) {
-      if (context.mounted) {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text('Klarte ikke å logge inn'),
-                  Icon(
-                    Icons.wifi_off,
-                    color: Theme.of(context).colorScheme.error,
-                  )
-                ],
-              ),
-              content: const Text(
-                  'Klarte ikke å koble til server. Sjekk internettforbindelsen din.'),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: const Padding(
-                      padding: EdgeInsets.all(14.0),
-                      child: Text('OK'),
-                    ),
-                  ),
-                ),
-              ],
-            );
-          },
-        );
-      }
-    }
-  }
-
-  void _register(BuildContext context) async {
-    try {
-      final response = await BackendApi.register(username, password);
-      if (response.statusCode == 200) {
-        final prefs = await SharedPreferences.getInstance();
-        final token = jsonDecode(response.body)['token'];
-        prefs.setString('token', token);
-        prefs.setString('username', username);
-        // Show success popup message
-        if (context.mounted) {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text('Suksess'),
-                    Icon(
-                      Icons.check_circle_outline,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                  ],
-                ),
-                content: const Text('Du er nå registrert!'),
-                actions: <Widget>[
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                      Navigator.pushReplacementNamed(context, '/home');
-                      // Navigate to home page
-                    },
-                    child: const Text('OK'),
-                  ),
-                ],
-              );
-            },
-          );
-        }
-      } else {
-        // Show error popup message
-        if (context.mounted) {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text('Klarte ikke å registrere bruker'),
-                    Icon(
-                      Icons.error,
-                      color: Theme.of(context).colorScheme.error,
-                    ),
-                  ],
-                ),
-                content: const Text(
-                    'Brukernavnet er allerede i bruk. Velg et annet brukernavn.'),
-                actions: <Widget>[
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: const Padding(
-                        padding: EdgeInsets.all(14.0),
-                        child: Text('OK'),
-                      ),
-                    ),
-                  ),
-                ],
-              );
-            },
-          );
-        }
-      }
-    } catch (e) {
-      if (context.mounted) {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text('Klarte ikke å registrere bruker'),
-                  Icon(Icons.wifi_off,
-                      color: Theme.of(context).colorScheme.error),
-                ],
-              ),
-              content: const Text(
-                  'Klarte ikke å koble til server. Sjekk internettforbindelsen din.'),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: const Padding(
-                      padding: EdgeInsets.all(14.0),
-                      child: Text('OK'),
-                    ),
-                  ),
-                ),
-              ],
-            );
-          },
-        );
-      }
-    }
-  }
-
-  Widget _buildLogin(BuildContext context) {
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Logg inn'),
@@ -366,8 +152,145 @@ class _LoginWidgetState extends State<LoginWidget> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return _buildLogin(context);
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  String get username => _usernameController.text;
+  String get password => _passwordController.text;
+
+  void _login(BuildContext context) async {
+    try {
+      bool loginSuccess = await UserController.login(username, password);
+      if (loginSuccess) {
+        if (context.mounted) {
+          Navigator.pushReplacementNamed(context, '/home');
+        }
+      } else {
+        // Show error popup message
+        if (context.mounted) {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text('Klarte ikke å logge inn'),
+                    Icon(
+                      Icons.error,
+                      color: Theme.of(context).colorScheme.error,
+                    ),
+                  ],
+                ),
+                content: const Text(
+                    'Feil brukernavn eller passord. Sjekk at du har skrevet riktig.'),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: const Padding(
+                        padding: EdgeInsets.all(14.0),
+                        child: Text('OK'),
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
+          );
+        }
+      }
+    } catch (e) {
+      if (context.mounted) {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text('Klarte ikke å logge inn'),
+                  Icon(
+                    Icons.wifi_off,
+                    color: Theme.of(context).colorScheme.error,
+                  )
+                ],
+              ),
+              content: const Text(
+                  'Klarte ikke å koble til server. Sjekk internettforbindelsen din.'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Padding(
+                      padding: EdgeInsets.all(14.0),
+                      child: Text('OK'),
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+      }
+    }
+  }
+
+  void _register(BuildContext context) async {
+    try {
+      final bool registerSuccess =
+          await UserController.register(username, password);
+      if (registerSuccess) {
+        if (context.mounted) {
+          MessageDialog.showMessageDialog(
+              context: context,
+              type: MessageType.success,
+              title: 'Suksess',
+              message: 'Brukeren har blitt registrert.',
+              buttonText: 'ok',
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pushReplacementNamed('/home');
+              });
+        }
+      } else {
+        // Show error popup message
+        if (context.mounted) {
+          MessageDialog.showMessageDialog(
+              context: context,
+              type: MessageType.error,
+              title: 'Det har oppstått en feil',
+              message:
+                  'Brukernavnet er allerede i bruk. Vennligst prøv et annet navn.',
+              buttonText: 'ok',
+              onPressed: () {
+                Navigator.of(context).pop();
+              });
+        }
+      }
+    } catch (e) {
+      if (context.mounted) {
+        MessageDialog.showMessageDialog(
+            context: context,
+            type: MessageType.networkError,
+            title: 'Nettverksfeil',
+            message:
+                'Klarte ikke å koble til server. Sjekk internettforbindelsen din.',
+            buttonText: 'ok',
+            onPressed: () {
+              Navigator.of(context).pop();
+            });
+      }
+    }
   }
 }

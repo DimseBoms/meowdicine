@@ -1,16 +1,12 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:meowdicine/controllers/animals_controller.dart';
 import 'package:meowdicine/controllers/user_controller.dart';
 import 'package:meowdicine/widgets/animal_form.dart';
 import 'package:meowdicine/widgets/animals_grid.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../objects/animal.dart';
 import '../styles/styles.dart';
 import '../widgets/sidebar.dart';
-import '../http/backend_api.dart';
 import '../widgets/no_animals.dart';
 
 class AnimalsScreen extends StatefulWidget {
@@ -60,10 +56,10 @@ class _AnimalsScreenState extends State<AnimalsScreen> {
                 builder: (BuildContext context) {
                   return AlertDialog(
                     content: AnimalForm(
-                      nameController: _nameController,
-                      speciesController: _speciesController,
-                      selectedDate: _selectedDate,
-                    ),
+                        nameController: _nameController,
+                        speciesController: _speciesController,
+                        selectedDate: _selectedDate,
+                        animal: null),
                     actions: [
                       ElevatedButton(
                         onPressed: () {

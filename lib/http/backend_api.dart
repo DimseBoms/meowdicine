@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
+import '../controllers/user_controller.dart';
 import '../objects/animal.dart';
 
 class BackendApi {
@@ -63,9 +64,10 @@ class BackendApi {
     );
   }
 
-  static Future<http.Response> updateAnimal(
-      String token, String username, Animal animal) async {
-    return http.post(
+  static Future<http.Response> updateAnimal(Animal animal) async {
+    String token = await UserController.getToken();
+    String username = await UserController.getUsername();
+    return http.put(
       Uri.parse('$_baseUrl/animals/update'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
