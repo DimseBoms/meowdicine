@@ -18,6 +18,7 @@ class AnimalsScreen extends StatefulWidget {
 
 class _AnimalsScreenState extends State<AnimalsScreen> {
   String _token = '';
+  String _username = '';
   List<Animal> _animals = [];
 
   @override
@@ -29,19 +30,22 @@ class _AnimalsScreenState extends State<AnimalsScreen> {
   _initCredentials() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
-    if (token != null) {
+    final username = prefs.getString('username');
+    if (token != null && username != null) {
       setState(() {
         _token = token;
+        _username = username;
       });
-      final response = await BackendApi.getAnimals(token);
+      final response = await BackendApi.getAnimals(token, username);
+      print(response.body);
       if (response.statusCode == 200) {
         final animals = jsonDecode(response.body)['animals'];
         if (animals != null) {
-          for (var animal in animals) {
-            setState(() {
-              _animals.add(Animal.fromJson(animal));
-            });
-          }
+          setState(() {
+            _animals = animals
+                .map<Animal>((animal) => Animal.fromJson(animal))
+                .toList();
+          });
         }
       }
     }

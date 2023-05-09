@@ -30,27 +30,25 @@ class BackendApi {
     );
   }
 
-  static Future<http.Response> logout(String token) async {
+  static Future<http.Response> logout(String token, String username) async {
     return http.post(
       Uri.parse('$_baseUrl/logout'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: jsonEncode(<String, String>{'token': token}),
+      body: jsonEncode(<String, String>{'token': token, 'username': username}),
     );
   }
 
-  static Future<http.Response> getAnimals(String token) async {
-    return http.post(
-      Uri.parse('$_baseUrl/animals'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, String>{'token': token}),
+  static Future<http.Response> getAnimals(String token, String username) async {
+    print('$_baseUrl/animals?token=$token&username=$username');
+    return http.get(
+      Uri.parse('$_baseUrl/animals?token=$token&username=$username'),
     );
   }
 
-  static Future<http.Response> addAnimal(String token, Animal animal) async {
+  static Future<http.Response> addAnimal(
+      String token, String username, Animal animal) async {
     return http.post(
       Uri.parse('$_baseUrl/animals/create'),
       headers: <String, String>{
@@ -58,6 +56,7 @@ class BackendApi {
       },
       body: jsonEncode(<String, dynamic>{
         'token': token,
+        'username': username,
         'name': animal.name,
         'species': animal.species,
         'birthday': dateTimeToDateString(animal.birthday),
@@ -66,23 +65,28 @@ class BackendApi {
   }
 
   static Future<http.Response> deleteAnimal(
-      String token, String animalId) async {
+      String token, String username, String animalId) async {
     return http.post(
       Uri.parse('$_baseUrl/deleteAnimal'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: jsonEncode(<String, String>{'token': token, 'animalId': animalId}),
+      body: jsonEncode(<String, String>{
+        'token': token,
+        'username': username,
+        'animalId': animalId
+      }),
     );
   }
 
-  static Future<http.Response> getMedicines(String token) async {
+  static Future<http.Response> getMedicines(
+      String token, String username) async {
     return http.post(
       Uri.parse('$_baseUrl/medicines'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: jsonEncode(<String, String>{'token': token}),
+      body: jsonEncode(<String, String>{'token': token, 'username': username}),
     );
   }
 

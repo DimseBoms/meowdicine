@@ -153,7 +153,7 @@ class _LoginWidgetState extends State<LoginWidget> {
   void _register(BuildContext context) async {
     try {
       final response = await BackendApi.register(username, password);
-      if (response.statusCode == 201) {
+      if (response.statusCode == 200) {
         final prefs = await SharedPreferences.getInstance();
         final token = jsonDecode(response.body)['token'];
         prefs.setString('token', token);

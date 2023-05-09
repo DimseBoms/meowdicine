@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:meowdicine/http/backend_api.dart';
 
 class Sidebar extends StatefulWidget {
   const Sidebar({Key? key, required this.title}) : super(key: key);
@@ -35,6 +36,15 @@ class _SidebarState extends State<Sidebar> {
 
   void _logout(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    final username = prefs.getString('username');
+    if (token != null && username != null) {
+      try {
+        await BackendApi.logout(token, username);
+      } catch (e) {
+        print(e);
+      }
+    }
     prefs.remove('token');
     prefs.remove('username');
     if (context.mounted) {

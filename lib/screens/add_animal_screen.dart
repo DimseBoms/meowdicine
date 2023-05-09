@@ -15,19 +15,22 @@ class AddAnimalScreen extends StatefulWidget {
 
 class _AddAnimalScreenState extends State<AddAnimalScreen> {
   DateTime _selectedDate = _getInitialDate();
+  String _username = '';
   String _token = '';
 
   @override
   void initState() {
     super.initState();
-    _initToken();
+    _initCredentials();
   }
 
-  void _initToken() async {
+  void _initCredentials() async {
     final prefs = await SharedPreferences.getInstance();
+    final username = prefs.getString('username');
     final token = prefs.getString('token');
-    if (token != null) {
+    if (username != null && token != null) {
       setState(() {
+        _username = username;
         _token = token;
       });
     } else {
@@ -43,16 +46,6 @@ class _AddAnimalScreenState extends State<AddAnimalScreen> {
   static DateTime _getInitialDate() {
     final DateTime now = DateTime.now();
     return DateTime(now.year, now.month, now.day);
-  }
-
-  Widget _showInputDatePickerFormField() {
-    return InputDatePickerFormField(
-        firstDate: DateTime(1900),
-        lastDate: DateTime.now(),
-        initialDate: _selectedDate,
-        onDateSubmitted: (DateTime value) {
-          _setDate(value);
-        });
   }
 
   void _showDatePickerDialog() async {
@@ -80,8 +73,8 @@ class _AddAnimalScreenState extends State<AddAnimalScreen> {
 
   void _createAnimal(BuildContext context, Animal animal) async {
     try {
-      final response = await BackendApi.addAnimal(_token, animal);
-      if (response.statusCode == 201) {
+      final response = await BackendApi.addAnimal(_token, _username, animal);
+      if (response.statusCode == 200) {
         if (context.mounted) {
           Navigator.pop(context);
         } else {
@@ -90,6 +83,34 @@ class _AddAnimalScreenState extends State<AddAnimalScreen> {
             builder: (BuildContext context) {
               return AlertDialog(
                 title: const Text('Feil'),
+                content: const Text('Kunne ikke legge til dyr'),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text('OK'),
+                  ),
+                ],
+              );
+            },
+          );
+        }
+      } else {
+        if (context.mounted) {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Row(
+                  children: const [
+                    Text('Feil'),
+                    Icon(
+                      Icons.error,
+                      color: Colors.red,
+                    )
+                  ],
+                ),
                 content: const Text('Kunne ikke legge til dyr'),
                 actions: [
                   TextButton(
