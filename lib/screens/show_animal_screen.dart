@@ -25,10 +25,16 @@ class _ShowAnimalState extends State<ShowAnimal> {
   final DateTime _selectedDate = _getInitialDate();
 
   @override
+  initState() {
+    super.initState();
+    _nameController.text = widget.animal.name;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.animal.name),
+        title: Text('Rediger ${_nameController.text}'),
       ),
       body: Center(
         child: ConstrainedBox(
@@ -118,6 +124,9 @@ class _ShowAnimalState extends State<ShowAnimal> {
       bool animalUpdated = await AnimalsController.updateAnimal(animal);
       if (animalUpdated) {
         if (context.mounted) {
+          setState(() {
+            _nameController.text = animal.name;
+          });
           widget.updateAnimal(animal);
           MessageDialog.showMessageDialog(
               context: context,
@@ -144,10 +153,6 @@ class _ShowAnimalState extends State<ShowAnimal> {
             Navigator.of(context).pop();
           });
     }
-  }
-
-  void _updateAnimal() {
-    widget.updateAnimal(widget.animal);
   }
 
   static DateTime _getInitialDate() {
