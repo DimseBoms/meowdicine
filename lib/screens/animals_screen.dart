@@ -45,9 +45,7 @@ class _AnimalsScreenState extends State<AnimalsScreen> {
           title: "Dyr",
         ),
         body: _animals.isNotEmpty
-            ? AnimalsGrid(
-                animals: _animals,
-              )
+            ? AnimalsGrid(animals: _animals, updateAnimal: _updateAnimal)
             : const NoAnimals(),
         floatingActionButton: FloatingActionButton(
           focusColor: Theme.of(context).colorScheme.primary,
@@ -114,6 +112,12 @@ class _AnimalsScreenState extends State<AnimalsScreen> {
             });
       }
     }
+  }
+
+  void _updateAnimal(Animal animal) {
+    setState(() {
+      _animals[_animals.indexWhere((a) => a.id == animal.id)] = animal;
+    });
   }
 
   void _createAnimal(BuildContext context, Animal animal) async {

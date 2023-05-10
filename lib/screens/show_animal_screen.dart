@@ -7,9 +7,11 @@ import '../styles/styles.dart';
 import '../widgets/message_dialog.dart';
 
 class ShowAnimal extends StatefulWidget {
-  const ShowAnimal({Key? key, required this.animal}) : super(key: key);
+  const ShowAnimal({Key? key, required this.animal, required this.updateAnimal})
+      : super(key: key);
 
   final Animal animal;
+  final void Function(Animal animal) updateAnimal;
 
   @override
   State<ShowAnimal> createState() => _ShowAnimalState();
@@ -116,6 +118,7 @@ class _ShowAnimalState extends State<ShowAnimal> {
       bool animalUpdated = await AnimalsController.updateAnimal(animal);
       if (animalUpdated) {
         if (context.mounted) {
+          widget.updateAnimal(animal);
           MessageDialog.showMessageDialog(
               context: context,
               type: MessageType.success,
@@ -141,6 +144,10 @@ class _ShowAnimalState extends State<ShowAnimal> {
             Navigator.of(context).pop();
           });
     }
+  }
+
+  void _updateAnimal() {
+    widget.updateAnimal(widget.animal);
   }
 
   static DateTime _getInitialDate() {

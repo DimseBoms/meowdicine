@@ -4,9 +4,12 @@ import 'package:meowdicine/screens/show_animal_screen.dart';
 import '../objects/animal.dart';
 
 class AnimalsGrid extends StatefulWidget {
-  const AnimalsGrid({Key? key, required this.animals}) : super(key: key);
+  const AnimalsGrid(
+      {Key? key, required this.animals, required this.updateAnimal})
+      : super(key: key);
 
   final List<Animal> animals;
+  final void Function(Animal animal) updateAnimal;
 
   @override
   _AnimalsGridState createState() => _AnimalsGridState();
@@ -43,7 +46,8 @@ class _AnimalsGridState extends State<AnimalsGrid> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => ShowAnimal(animal: animal),
+                        builder: (context) => ShowAnimal(
+                            animal: animal, updateAnimal: widget.updateAnimal),
                       ),
                     );
                   },
