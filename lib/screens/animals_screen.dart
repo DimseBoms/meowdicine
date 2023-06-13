@@ -124,9 +124,7 @@ class _AnimalsScreenState extends State<AnimalsScreen> {
     try {
       bool createdAnimal = await AnimalsController.addAnimal(animal);
       if (createdAnimal) {
-        setState(() {
-          _animals.add(animal);
-        });
+        _fetchData();
         if (context.mounted) {
           Navigator.pop(context);
         }
