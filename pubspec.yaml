@@ -37,7 +37,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   http: ^0.13.6
   shared_preferences: ^2.1.0
-  json_theme: ^5.0.2+6
+  json_theme: ^6.0.0
   table_calendar: ^3.0.9
 
 dev_dependencies:

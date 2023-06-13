@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:meowdicine/widgets/calendar_overview.dart';
 
 import 'package:meowdicine/widgets/medicine_calendar.dart';
 
@@ -27,8 +28,10 @@ class _HomeScreenState extends State<HomeScreen> {
         title: _pageTitle,
       ),
       body: const Center(
-        child: MedicineCalendar(
-          title: 'Medisinplan',
+        child: Column(
+          children: [
+            CalendarOverview(title: 'Kalender'),
+          ],
         ),
       ),
     );
