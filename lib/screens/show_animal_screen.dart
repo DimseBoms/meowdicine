@@ -142,6 +142,7 @@ class _ShowAnimalState extends State<ShowAnimal> {
         throw Exception('Klarte ikke oppdatere');
       }
     } catch (e) {
+      print(e);
       MessageDialog.showMessageDialog(
           context: context,
           type: MessageType.networkError,

@@ -78,7 +78,7 @@ class BackendApi {
         'name': animal.name,
         'species': animal.species,
         'birthday': dateTimeToDateString(animal.birthday),
-        'id': animal.id,
+        'animalId': animal.id,
       }),
     );
   }

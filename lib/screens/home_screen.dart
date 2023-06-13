@@ -26,10 +26,10 @@ class _HomeScreenState extends State<HomeScreen> {
       drawer: Sidebar(
         title: _pageTitle,
       ),
-      body: Center(
+      body: const Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const <Widget>[
+          children: <Widget>[
             MedicineCalendar(
               title: 'Medisinkalender',
             ),
