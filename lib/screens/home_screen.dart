@@ -27,13 +27,8 @@ class _HomeScreenState extends State<HomeScreen> {
         title: _pageTitle,
       ),
       body: const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            MedicineCalendar(
-              title: 'Medisinkalender',
-            ),
-          ],
+        child: MedicineCalendar(
+          title: 'Medisinplan',
         ),
       ),
     );

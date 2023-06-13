@@ -38,6 +38,7 @@ dependencies:
   http: ^0.13.6
   shared_preferences: ^2.1.0
   json_theme: ^5.0.2+6
+  table_calendar: ^3.0.9
 
 dev_dependencies:
   flutter_test:
