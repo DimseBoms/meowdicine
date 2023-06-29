@@ -43,7 +43,7 @@ class MyApp extends StatelessWidget {
           case '/home':
             return MaterialPageRoute(
                 builder: (context) => const HomeScreen(
-                      title: "Hjem",
+                      key: Key('Home'),
                     ));
           case '/animals':
             return MaterialPageRoute(
