@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:meowdicine/widgets/calendar_overview.dart';
 
-import 'package:meowdicine/widgets/medicine_calendar.dart';
 
 import '../widgets/sidebar.dart';
 
