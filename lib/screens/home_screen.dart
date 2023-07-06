@@ -1,7 +1,7 @@
-import 'dart:collection';
+// Copyright 2019 Aleksander Woźniak
+// SPDX-License-Identifier: Apache-2.0
 
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import '../utils.dart';
@@ -15,15 +15,11 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   late final ValueNotifier<List<Event>> _selectedEvents;
-  final ValueNotifier<DateTime> _focusedDay = ValueNotifier(DateTime.now());
-  final Set<DateTime> _selectedDays = LinkedHashSet<DateTime>(
-    equals: isSameDay,
-    hashCode: getHashCode,
-  );
-
-  late PageController _pageController;
   CalendarFormat _calendarFormat = CalendarFormat.month;
-  RangeSelectionMode _rangeSelectionMode = RangeSelectionMode.toggledOff;
+  RangeSelectionMode _rangeSelectionMode = RangeSelectionMode
+      .toggledOff; // Can be toggled on/off by longpressing a date
+  DateTime _focusedDay = DateTime.now();
+  DateTime? _selectedDay;
   DateTime? _rangeStart;
   DateTime? _rangeEnd;
 
@@ -31,61 +27,54 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
 
-    _selectedDays.add(_focusedDay.value);
-    _selectedEvents = ValueNotifier(_getEventsForDay(_focusedDay.value));
+    _selectedDay = _focusedDay;
+    _selectedEvents = ValueNotifier(_getEventsForDay(_selectedDay!));
   }
 
   @override
   void dispose() {
-    _focusedDay.dispose();
     _selectedEvents.dispose();
     super.dispose();
   }
 
-  bool get canClearSelection =>
-      _selectedDays.isNotEmpty || _rangeStart != null || _rangeEnd != null;
-
   List<Event> _getEventsForDay(DateTime day) {
+    // Implementation example
     return kEvents[day] ?? [];
   }
 
-  List<Event> _getEventsForDays(Iterable<DateTime> days) {
+  List<Event> _getEventsForRange(DateTime start, DateTime end) {
+    // Implementation example
+    final days = daysInRange(start, end);
+
     return [
       for (final d in days) ..._getEventsForDay(d),
     ];
   }
 
-  List<Event> _getEventsForRange(DateTime start, DateTime end) {
-    final days = daysInRange(start, end);
-    return _getEventsForDays(days);
-  }
-
   void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
-    setState(() {
-      if (_selectedDays.contains(selectedDay)) {
-        _selectedDays.remove(selectedDay);
-      } else {
-        _selectedDays.add(selectedDay);
-      }
+    if (!isSameDay(_selectedDay, selectedDay)) {
+      setState(() {
+        _selectedDay = selectedDay;
+        _focusedDay = focusedDay;
+        _rangeStart = null; // Important to clean those
+        _rangeEnd = null;
+        _rangeSelectionMode = RangeSelectionMode.toggledOff;
+      });
 
-      _focusedDay.value = focusedDay;
-      _rangeStart = null;
-      _rangeEnd = null;
-      _rangeSelectionMode = RangeSelectionMode.toggledOff;
-    });
-
-    _selectedEvents.value = _getEventsForDays(_selectedDays);
+      _selectedEvents.value = _getEventsForDay(selectedDay);
+    }
   }
 
   void _onRangeSelected(DateTime? start, DateTime? end, DateTime focusedDay) {
     setState(() {
-      _focusedDay.value = focusedDay;
+      _selectedDay = null;
+      _focusedDay = focusedDay;
       _rangeStart = start;
       _rangeEnd = end;
-      _selectedDays.clear();
       _rangeSelectionMode = RangeSelectionMode.toggledOn;
     });
 
+    // `start` or `end` could be null
     if (start != null && end != null) {
       _selectedEvents.value = _getEventsForRange(start, end);
     } else if (start != null) {
@@ -95,128 +84,40 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  // A sample data source for custom styles
-  Map<DateTime, String> customStyles = {
-    DateTime(2023, 6, 1): 'red',
-    DateTime(2023, 6, 5): 'green',
-    DateTime(2023, 6, 10): 'yellow',
-  };
-
-// A helper function to get the color from the data source
-  Color getColor(DateTime date) {
-    String color = customStyles[date] ?? 'default';
-    switch (color) {
-      case 'red':
-        return Colors.red;
-      case 'green':
-        return Colors.green;
-      case 'yellow':
-        return Colors.yellow;
-      default:
-        return Colors.transparent;
-    }
-  }
-
-// A custom builder for default dates
-  Widget defaultBuilder(BuildContext context, DateTime date, dynamic events) {
-    return Container(
-      margin: const EdgeInsets.all(4.0),
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        color: getColor(date), // Use the helper function to get the color
-        shape: BoxShape.circle,
-      ),
-      child: Text(
-        date.day.toString(),
-        style: TextStyle().copyWith(fontSize: 16.0),
-      ),
-    );
-  }
-
-// A custom builder for today's date
-  Widget todayBuilder(BuildContext context, DateTime date, dynamic events) {
-    return Container(
-      margin: const EdgeInsets.all(4.0),
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        color: getColor(date), // Use the same helper function
-        shape: BoxShape.circle,
-        border: Border.all(color: Colors.blue, width: 2.0),
-      ),
-      child: Text(
-        date.day.toString(),
-        style: TextStyle().copyWith(fontSize: 16.0),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('TableCalendar - Complex'),
+        title: Text('TableCalendar - Events'),
       ),
       body: Column(
         children: [
-          ValueListenableBuilder<DateTime>(
-            valueListenable: _focusedDay,
-            builder: (context, value, _) {
-              return _CalendarHeader(
-                focusedDay: value,
-                clearButtonVisible: canClearSelection,
-                onTodayButtonTap: () {
-                  setState(() => _focusedDay.value = DateTime.now());
-                },
-                onClearButtonTap: () {
-                  setState(() {
-                    _rangeStart = null;
-                    _rangeEnd = null;
-                    _selectedDays.clear();
-                    _selectedEvents.value = [];
-                  });
-                },
-                onLeftArrowTap: () {
-                  _pageController.previousPage(
-                    duration: Duration(milliseconds: 300),
-                    curve: Curves.easeOut,
-                  );
-                },
-                onRightArrowTap: () {
-                  _pageController.nextPage(
-                    duration: Duration(milliseconds: 300),
-                    curve: Curves.easeOut,
-                  );
-                },
-              );
-            },
-          ),
           TableCalendar<Event>(
-            calendarBuilders: CalendarBuilders(
-              defaultBuilder: defaultBuilder,
-              todayBuilder: todayBuilder,
-            ),
             firstDay: kFirstDay,
             lastDay: kLastDay,
-            focusedDay: _focusedDay.value,
-            headerVisible: false,
-            selectedDayPredicate: (day) => _selectedDays.contains(day),
+            focusedDay: _focusedDay,
+            selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
             rangeStartDay: _rangeStart,
             rangeEndDay: _rangeEnd,
             calendarFormat: _calendarFormat,
             rangeSelectionMode: _rangeSelectionMode,
             eventLoader: _getEventsForDay,
-            holidayPredicate: (day) {
-              // Every 20th day of the month will be treated as a holiday
-              return day.day == 20;
-            },
+            startingDayOfWeek: StartingDayOfWeek.monday,
+            calendarStyle: CalendarStyle(
+              // Use `CalendarStyle` to customize the UI
+              outsideDaysVisible: false,
+            ),
             onDaySelected: _onDaySelected,
             onRangeSelected: _onRangeSelected,
-            onCalendarCreated: (controller) => _pageController = controller,
-            onPageChanged: (focusedDay) => _focusedDay.value = focusedDay,
             onFormatChanged: (format) {
               if (_calendarFormat != format) {
-                setState(() => _calendarFormat = format);
+                setState(() {
+                  _calendarFormat = format;
+                });
               }
+            },
+            onPageChanged: (focusedDay) {
+              _focusedDay = focusedDay;
             },
           ),
           const SizedBox(height: 8.0),
@@ -245,66 +146,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 );
               },
             ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _CalendarHeader extends StatelessWidget {
-  final DateTime focusedDay;
-  final VoidCallback onLeftArrowTap;
-  final VoidCallback onRightArrowTap;
-  final VoidCallback onTodayButtonTap;
-  final VoidCallback onClearButtonTap;
-  final bool clearButtonVisible;
-
-  const _CalendarHeader({
-    Key? key,
-    required this.focusedDay,
-    required this.onLeftArrowTap,
-    required this.onRightArrowTap,
-    required this.onTodayButtonTap,
-    required this.onClearButtonTap,
-    required this.clearButtonVisible,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final headerText = DateFormat.yMMM().format(focusedDay);
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Row(
-        children: [
-          const SizedBox(width: 16.0),
-          SizedBox(
-            width: 120.0,
-            child: Text(
-              headerText,
-              style: TextStyle(fontSize: 26.0),
-            ),
-          ),
-          IconButton(
-            icon: Icon(Icons.calendar_today, size: 20.0),
-            visualDensity: VisualDensity.compact,
-            onPressed: onTodayButtonTap,
-          ),
-          if (clearButtonVisible)
-            IconButton(
-              icon: Icon(Icons.clear, size: 20.0),
-              visualDensity: VisualDensity.compact,
-              onPressed: onClearButtonTap,
-            ),
-          const Spacer(),
-          IconButton(
-            icon: Icon(Icons.chevron_left),
-            onPressed: onLeftArrowTap,
-          ),
-          IconButton(
-            icon: Icon(Icons.chevron_right),
-            onPressed: onRightArrowTap,
           ),
         ],
       ),
